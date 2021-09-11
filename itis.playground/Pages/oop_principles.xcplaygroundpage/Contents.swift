@@ -10,8 +10,6 @@ protocol AbstractPhone {
     var companyName: String { get }
     var modelID: Int { get }
     
-//    init(in year: Int, from companyName: String, modelID: Int)
-    
     func call(outputNumber: Int) -> Void
     func ring(inputNumber: Int) -> Void
 }
@@ -29,7 +27,7 @@ class SomePhone {
     }
     
     open func openConnection() {
-//        findComutator
+//        findComutator...
 //        openNewConnection...
     }
     
@@ -48,8 +46,6 @@ class SomePhone {
 protocol WirelessPhone: AbstractPhone {
 
     var resourceOfWorkInHours: Int { get set }
-
-//    init(year: Int, companyName: String, modelID: Int, hours: Int)
 }
 
 class CellPhone: WirelessPhone {
