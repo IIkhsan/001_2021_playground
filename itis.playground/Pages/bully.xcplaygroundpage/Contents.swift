@@ -31,9 +31,8 @@ struct Weapon {
 }
 
 enum FractionName: String, CaseIterable {
-    //TODO: - проверить, можно ли не писать литералы
-    case Gryffindor = "Gryffindor"
-    case Slytherin = "Slytherin"
+    case Gryffindor
+    case Slytherin
     case Ravenclaw
     case Hufflepuff
 }
