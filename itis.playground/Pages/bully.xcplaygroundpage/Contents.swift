@@ -220,10 +220,6 @@ extension Arena {
         print("\n🎊Fraction \(aliveFraction.fractionName) wins🎉")
         print("📊Casualties: \(fractions[0].stats())")
         print("              \(fractions[1].stats())")
-//        let fraction0DeadStudentsCount = fractions[0].students.filter({ !$0.isAlive }).count
-//        print("📊Casualties: \(fractions[0].fractionName) lost \(fraction0DeadStudentsCount) students out of \(fractions[0].students.count)")
-//        let fraction1DeadStudentsCount = fractions[1].students.filter({ !$0.isAlive }).count
-//        print("              \(fractions[1].fractionName) lost \(fraction1DeadStudentsCount) students out of \(fractions[1].students.count)")
     }
 }
 
