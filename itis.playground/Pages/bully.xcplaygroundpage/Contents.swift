@@ -210,7 +210,11 @@ protocol Arena {
 extension Arena {
     
     mutating func startBattle() {
-        print("\nStarting battle between \(fractions[0].fractionName) and \(fractions[1].fractionName):")
+        print("""
+        \nStarting battle between \(fractions[0].fractionName) \
+        and \(fractions[1].fractionName) on \
+        \(String(describing: type(of: self))):
+        """)
         while fractions[0].isAlive, fractions[1].isAlive {
             fractions.shuffle()
             fractions[0].attack(to: fractions[1])
