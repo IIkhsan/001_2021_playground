@@ -141,7 +141,7 @@ class Bully: Arena {
     
     func lootStage(fraction: Fraction) {
         print()
-        print("Фракция \(fraction.name) лутается")
+        print("Фракция \(fraction.name) совместно ищет предметы")
         for student in fraction.students {
             
             let randomNumber = Int.random(in: 1...100)
