@@ -4,5 +4,6 @@
         <page name='page'/>
         <page name='oop_principles'/>
         <page name='fractional_number'/>
+        <page name='bully'/>
     </pages>
 </playground>
