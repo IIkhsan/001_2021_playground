@@ -2,7 +2,7 @@
 class A {}
 
 // Наследование
-class B : A {}
+class B: A {}
 
 // Инкапсуляция
 class C {
@@ -18,18 +18,19 @@ class C {
 }
 
 // Полиморфизм
-let example : A = B()
+let example: A = B()
 
 //MARK: - 3 Задание
-enum errors : Error {
+enum errors: Error {
     case ZeroDenominator
+    case UnknownId(describing: String)
 }
 
 struct FractionalNumber {
-    var numerator : Int
-    var denominator : Int
+    var numerator: Int
+    var denominator: Int
     
-    init(_ numerator : Int, _ denominator : Int) throws {
+    init(_ numerator: Int, _ denominator: Int) throws {
         if denominator == 0 {
             throw errors.ZeroDenominator
         }
@@ -37,34 +38,50 @@ struct FractionalNumber {
         self.denominator = denominator
     }
     
-    func multiply(another x : FractionalNumber) -> FractionalNumber  {
+    func multiply(another x: FractionalNumber) -> FractionalNumber  {
         let numerator = self.numerator * x.numerator
         let denominator = self.denominator * x.denominator
-        return try! FractionalNumber(numerator, denominator)
+        if let newNumber =  try? FractionalNumber(numerator, denominator) {
+            return newNumber
+        } else {
+            return self
+        }
     }
     
-    func divide(another x : FractionalNumber) -> FractionalNumber {
+    func divide(another x: FractionalNumber) -> FractionalNumber {
         let numerator = self.numerator * x.denominator
         let denominator = self.denominator * x.numerator
-        return try! FractionalNumber(numerator, denominator)
+        if let newNumber =  try? FractionalNumber(numerator, denominator) {
+            return newNumber
+        } else {
+            return self
+        }
     }
     
-    func plus(another x : FractionalNumber) -> FractionalNumber {
+    func plus(another x: FractionalNumber) -> FractionalNumber {
         let firstConstToMultiply = findLCM(self.denominator, x.denominator) / self.denominator
         let secondConstToMultiply = findLCM(self.denominator, x.denominator) / x.denominator
         
         let numerator = self.numerator * firstConstToMultiply + x.numerator * secondConstToMultiply
         let denominator = self.denominator * firstConstToMultiply
-        return try! FractionalNumber(numerator, denominator)
+        if let newNumber =  try? FractionalNumber(numerator, denominator) {
+            return newNumber
+        } else {
+            return self
+        }
     }
     
-    func minus(another x : FractionalNumber) -> FractionalNumber {
+    func minus(another x: FractionalNumber) -> FractionalNumber {
         let firstConstToMultiply = findLCM(self.denominator, x.denominator) / self.denominator
         let secondConstToMultiply = findLCM(self.denominator, x.denominator) / x.denominator
         
         let numerator = self.numerator * firstConstToMultiply - x.numerator * secondConstToMultiply
         let denominator = self.denominator * firstConstToMultiply
-        return try! FractionalNumber(numerator, denominator)
+        if let newNumber =  try? FractionalNumber(numerator, denominator) {
+            return newNumber
+        } else {
+            return self
+        }
     }
     
     func show() {
@@ -72,7 +89,7 @@ struct FractionalNumber {
     }
     
     // НОК
-    private func findLCM(_ a : Int, _ b : Int) -> Int {
+    private func findLCM(_ a: Int, _ b: Int) -> Int {
         return (a * b) / findGCD(a, b)
     }
     
@@ -103,46 +120,41 @@ for element in answers {
 
 //MARK: - 4 Задание
 
+// Протоколы
 protocol Student {
-    var name : String { get set }
-    var hp : Int { get set }
-    var damage : Int  { get set }
-    var battleCry : String { get set }
-    var isAlive : Bool { get set }
-    static var counter : Int { get set }
+    var name: String { get set }
+    var hp: Int { get set }
+    var damage: Int  { get set }
+    var battleCry: String { get set }
+    var isAlive: Bool { get set }
+    static var counter: Int { get set }
     
-    func attack(_ another : Student)
-    func takeDamage(_ damage : Int)
+    func attack(_ another: Student)
+    func takeDamage(_ damage: Int)
 }
 
 protocol Arena {
-    var firstGang : [Student] { get set }
-    var secondGang : [Student] { get set }
-    var place : Place! { get set }
+    var name: String { get set }
+    var firstGang: Fraction { get set }
+    var secondGang: Fraction { get set }
     
-    func startBattle()
+    func battle()
 }
 
-enum Place {
-    case school
-    case garages
-    case none
+protocol Fraction {
+    var name: String { get set }
+    var members: [Student] { get set }
+    var areMembersAlive: Bool { get set }
 }
 
-enum Fraction : String {
-    case bloods = "Blood's Gang"
-    case crips = "Crip's Gang"
-    case pirus = "Piru's Gang"
-    case bandidos = "Bandido's Gang"
-}
-
-class BloodsMember : Student {
+// Ученики
+class BloodsMember: Student {
     
     var name: String
     var hp: Int
     var damage: Int
     var battleCry: String
-    var isAlive : Bool
+    var isAlive: Bool
     static var counter = 1
     
     init() {
@@ -154,12 +166,12 @@ class BloodsMember : Student {
         self.battleCry = "I will kill you"
     }
     
-    func attack(_ another : Student) {
+    func attack(_ another: Student) {
         print("\(self.name): \(self.battleCry), \(another.name)")
         another.takeDamage(self.damage)
     }
     
-    func takeDamage(_ damage : Int) {
+    func takeDamage(_ damage: Int) {
         self.hp -= damage
         if self.hp <= 0 {
             self.isAlive = false
@@ -167,13 +179,13 @@ class BloodsMember : Student {
     }
 }
 
-class CripsMember : Student {
+class CripsMember: Student {
     
     var name: String
     var hp: Int
     var damage: Int
     var battleCry: String
-    var isAlive : Bool
+    var isAlive: Bool
     static var counter = 1
     
     init() {
@@ -185,12 +197,12 @@ class CripsMember : Student {
         self.battleCry = "Shoot this"
     }
     
-    func attack(_ another : Student) {
+    func attack(_ another: Student) {
         print("\(self.name): \(self.battleCry) \(another.name)")
         another.takeDamage(self.damage)
     }
     
-    func takeDamage(_ damage : Int) {
+    func takeDamage(_ damage: Int) {
         self.hp -= damage
         if self.hp <= 0 {
             self.isAlive = false
@@ -198,13 +210,13 @@ class CripsMember : Student {
     }
 }
 
-class PirusMember : Student {
+class PirusMember: Student {
     
     var name: String
     var hp: Int
     var damage: Int
     var battleCry: String
-    var isAlive : Bool
+    var isAlive: Bool
     static var counter = 1
     
     init() {
@@ -216,12 +228,12 @@ class PirusMember : Student {
         self.battleCry = "Rest in peace"
     }
     
-    func attack(_ another : Student) {
+    func attack(_ another: Student) {
         print("\(self.name): \(self.battleCry), \(another.name)")
         another.takeDamage(self.damage)
     }
     
-    func takeDamage(_ damage : Int) {
+    func takeDamage(_ damage: Int) {
         self.hp -= damage
         if self.hp <= 0 {
             self.isAlive = false
@@ -229,13 +241,13 @@ class PirusMember : Student {
     }
 }
 
-class BandidosMember : Student {
+class BandidosMember: Student {
     
     var name: String
     var hp: Int
     var damage: Int
     var battleCry: String
-    var isAlive : Bool
+    var isAlive: Bool
     static var counter = 1
     
     init() {
@@ -247,12 +259,12 @@ class BandidosMember : Student {
         self.battleCry = "Go away"
     }
     
-    func attack(_ another : Student) {
+    func attack(_ another: Student) {
         print("\(self.name): \(self.battleCry), \(another.name) pew-pew")
         another.takeDamage(self.damage)
     }
     
-    func takeDamage(_ damage : Int) {
+    func takeDamage(_ damage: Int) {
         self.hp -= damage
         if self.hp <= 0 {
             self.isAlive = false
@@ -260,153 +272,166 @@ class BandidosMember : Student {
     }
 }
 
-class BattleArena : Arena {
-    var firstGang: [Student]
-    var firstGangFraction : String!
-    var secondGang: [Student]
-    var secondGangFraction : String!
-    var place : Place!
+// Фракции
+class Crips: Fraction {
+    
+    var name: String
+    var members: [Student]
+    var areMembersAlive: Bool
+    let maxMembers = 5
     
     init() {
-        firstGang = [Student]()
-        secondGang = [Student]()
+        self.name = "Crips"
+        self.areMembersAlive = true
+        self.members = [Student]()
+        generateMembers()
     }
     
-    func startBattle() {
-        place = choosePlace()
-        generateGangs()
-        var isAliveFirstGang = true
-        var isAliveSecondGang = true
-        while (isAliveFirstGang && isAliveSecondGang) {
-            let firstGangMember = firstGang.filter({ student in
-                return student.isAlive
-            }).first!
+    private func generateMembers() {
+        let countsMembersOfGang = Int.random(in: 1...maxMembers)
+        for _ in 1...countsMembersOfGang {
+            members.append(CripsMember())
+        }
+    }
+}
+
+class Bloods: Fraction {
+    
+    var name: String
+    var members: [Student]
+    var areMembersAlive: Bool
+    let maxMembers = 5
+    
+    init() {
+        self.name = "Bloods"
+        self.areMembersAlive = true
+        self.members = [Student]()
+        generateMembers()
+    }
+    
+    private func generateMembers() {
+        let countsMembersOfGang = Int.random(in: 1...maxMembers)
+        for _ in 1...countsMembersOfGang {
+            members.append(BloodsMember())
+        }
+    }
+}
+
+class Pirus: Fraction {
+    
+    var name: String
+    var members: [Student]
+    var areMembersAlive: Bool
+    let maxMembers = 5
+    
+    init() {
+        self.name = "Pirus"
+        self.areMembersAlive = true
+        self.members = [Student]()
+        generateMembers()
+    }
+    
+    private func generateMembers() {
+        let countsMembersOfGang = Int.random(in: 1...maxMembers)
+        for _ in 1...countsMembersOfGang {
+            members.append(PirusMember())
+        }
+    }
+}
+
+class Bandidos: Fraction {
+    
+    var name: String
+    var members: [Student]
+    var areMembersAlive: Bool
+    let maxMembers = 5
+    
+    init() {
+        self.name = "Bandidos"
+        self.areMembersAlive = true
+        members = [Student]()
+        generateMembers()
+    }
+    
+    private func generateMembers() {
+        let countsMembersOfGang = Int.random(in: 1...maxMembers)
+        for _ in 1...countsMembersOfGang {
+            members.append(BandidosMember())
+        }
+    }
+}
+
+// Арена
+class School: Arena {
+    
+    var name: String
+    var firstGang: Fraction
+    var secondGang: Fraction
+    
+    init(_ firstGang: Fraction, _ secondGang: Fraction) {
+        self.name = "School"
+        self.firstGang = firstGang
+        self.secondGang = secondGang
+    }
+    
+    func battle() {
+        while (firstGang.areMembersAlive && secondGang.areMembersAlive) {
+            
+            guard let firstGangMember = firstGang.members.filter({ $0.isAlive }).first else {
+                firstGang.areMembersAlive = false
+                break
+            }
            
-            firstGangMember.attack(secondGang.filter({ student in
-                return student.isAlive
-            }).first!)
+            guard let enemyForFirstGang = secondGang.members.filter({ $0.isAlive }).first else {
+                secondGang.areMembersAlive = false
+                break
+            }
+            firstGangMember.attack(enemyForFirstGang)
                
-            isAliveSecondGang = checkIsGangAlive(secondGang)
-            if !isAliveSecondGang {
+            secondGang.areMembersAlive = checkIsGangAlive(secondGang.members)
+            if !secondGang.areMembersAlive { break }
+            
+            guard let secondGangMember = secondGang.members.filter({ $0.isAlive }).first else {
+                secondGang.areMembersAlive = false
                 break
             }
             
-            let secondGangMember = secondGang.filter({ student in
-                return student.isAlive
-            }).first!
-           
-            secondGangMember.attack(firstGang.filter({ student in
-                return student.isAlive
-            }).first!)
-            isAliveFirstGang = checkIsGangAlive(firstGang)
-            if !isAliveFirstGang {
+            guard let enemyForSecondGang = firstGang.members.filter({ $0.isAlive }).first else {
+                firstGang.areMembersAlive = false
                 break
             }
+            secondGangMember.attack(enemyForSecondGang)
+            
+            firstGang.areMembersAlive = checkIsGangAlive(firstGang.members)
+            if !firstGang.areMembersAlive { break }
         }
-        printResults(isAliveFirstGang)
+        printResults(firstGang, secondGang)
     }
     
-    private func choosePlace() -> Place {
-        let random = Int.random(in: 0...1)
-        switch random {
-        case 0:
-            print("Place of fight is choosen: Garages")
-            return .garages
-        case 1:
-            print("Place of fight is choosen: School")
-            return .school
-        default:
-            return .none
-        }
-    }
-    
-    private func checkIsGangAlive(_ gang : [Student]) -> Bool {
+    private func checkIsGangAlive(_ gang: [Student]) -> Bool {
         let counterOfAliveStudents = gang.filter { student in
             return student.isAlive
         }.count
         return counterOfAliveStudents != 0
     }
     
-    private func generateGangs() {
-        generateFirstGang()
-        generateSecondGang()
-    }
-    
-    private func generateFirstGang() {
-        let idOfGang = Int.random(in: 1...4)
-        let countsMembersOfGang = Int.random(in: 1...5)
-        switch idOfGang {
-        case 1:
-            firstGangFraction = Fraction.crips.rawValue
-            for _ in 0..<countsMembersOfGang {
-                firstGang.append(CripsMember())
-            }
-        case 2:
-            firstGangFraction = Fraction.bloods.rawValue
-            for _ in 0..<countsMembersOfGang {
-                firstGang.append(BloodsMember())
-            }
-        case 3:
-            firstGangFraction = Fraction.bandidos.rawValue
-            for _ in 0..<countsMembersOfGang {
-                firstGang.append(BandidosMember())
-            }
-        case 4:
-            firstGangFraction = Fraction.pirus.rawValue
-            for _ in 0..<countsMembersOfGang {
-                firstGang.append(PirusMember())
-            }
-        default:
-            break
-        }
-    }
-    
-    private func generateSecondGang() {
-        let idOfGang = Int.random(in: 1...4)
-        let countsMembersOfGang = Int.random(in: 1...5)
-        switch idOfGang {
-        case 1:
-            secondGangFraction = Fraction.crips.rawValue
-            for _ in 0..<countsMembersOfGang {
-                secondGang.append(CripsMember())
-            }
-        case 2:
-            secondGangFraction = Fraction.bloods.rawValue
-            for _ in 0..<countsMembersOfGang {
-                secondGang.append(BloodsMember())
-            }
-        case 3:
-            secondGangFraction = Fraction.bandidos.rawValue
-            for _ in 0..<countsMembersOfGang {
-                secondGang.append(BandidosMember())
-            }
-        case 4:
-            secondGangFraction = Fraction.pirus.rawValue
-            for _ in 0..<countsMembersOfGang {
-                secondGang.append(PirusMember())
-            }
-        default:
-            break
-        }
-    }
-    
-    func printResults(_ ifFirstWon : Bool) {
+    private func printResults(_ first: Fraction, _ second: Fraction) {
         print("Game over")
-        if ifFirstWon {
-            print("\(firstGangFraction!) won")
+        if first.areMembersAlive {
+            print("\(first.name) won")
         } else {
-            print("\(secondGangFraction!) won")
+            print("\(second.name) won")
         }
-        print("\(firstGangFraction!) info:")
-        for student in firstGang {
+        print("\(first.name) info:")
+        for student in first.members {
             if student.isAlive {
                 print("\(student.name) - \(student.hp)")
             } else {
                 print("\(student.name) - dead")
             }
         }
-        print("\(secondGangFraction!) info:")
-        for student in secondGang {
+        print("\(second.name) info:")
+        for student in second.members {
             if student.isAlive {
                 print("\(student.name) - \(student.hp)")
             } else {
@@ -416,6 +441,40 @@ class BattleArena : Arena {
     }
 }
 
+// Game
+class Game {
+    
+    private let arena: Arena
+    
+    init() {
+        arena = School(Helper.generateFraction(), Helper.generateFraction())
+    }
+    
+    func stat() {
+        arena.battle()
+    }
+    
+}
 
-let game = BattleArena()
-game.startBattle()
+// Helpers
+class Helper {
+    static func generateFraction() -> Fraction  {
+        let id = Int.random(in: 1...4)
+        switch id {
+        case 1:
+            return Crips()
+        case 2:
+            return Bloods()
+        case 3:
+            return Pirus()
+        case 4:
+            return Bandidos()
+        default:
+            return Crips()
+        }
+    }
+}
+
+// Main
+let game = Game()
+game.stat()
