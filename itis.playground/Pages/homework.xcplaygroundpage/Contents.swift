@@ -14,12 +14,12 @@ class Parent {
 
 class Child: Parent {
     func additionalMethod() {
+        parentMethod()
         print("do another thing")
     }
 }
 //Inheritance
 let child: Child = Child()
-child.parentMethod()
 child.additionalMethod()
 
 //Polymoprhism
@@ -28,12 +28,12 @@ parentTypeReference.parentMethod()
 
 //Encapsulation
 class Example {
+    
+    private var count: Int?
     public func somePublicMethod() {
         //do smth
         doSomethingPrivately()
     }
-    
-    private var count: Int?
     
     private func doSomethingPrivately(){
         //any encapsulated logic
@@ -57,6 +57,13 @@ class Dog: Soundable {
 
 //MARK: SECOND TASK AND THIRD TASK
 struct FractionalNumber: CustomStringConvertible {
+    
+    var numerator: Int
+    var denominator: Int
+    var description: String {
+        let digit = reduce(fractional: self)
+        return "\(digit.numerator)/\(digit.denominator)"
+    }
     
     public func multiplie(digit: Int) -> FractionalNumber {
         return FractionalNumber(numerator: numerator * digit, denominator: denominator)
@@ -99,15 +106,6 @@ struct FractionalNumber: CustomStringConvertible {
         guard divisor != 0 else { return FractionalNumber(numerator: fractional.numerator, denominator: 0) }
         return FractionalNumber(numerator: fractional.numerator / divisor, denominator: fractional.denominator / divisor)
     }
-    
-    var numerator: Int
-    
-    var denominator: Int
-    
-    var description: String {
-        let digit = reduce(fractional: self)
-        return "\(digit.numerator)/\(digit.denominator)"
-    }
 }
 
         
@@ -117,6 +115,29 @@ struct FractionalNumber: CustomStringConvertible {
 
 //MARK: FOURTH TASK
 
+//MARK: Правила
+/*
+Сущности
+ 1)Студенты бывают 4 типов: biologist лечит своих тиммейтов, motivator прибавляет damage тиммейтам, boxer и sportsman атакуют врагов, разница лишь в количестве hp, damage, defense
+ 2)Арены бывают 3 типов: ChemicalClass дают бонус классу biologist, они лечат лучше. Gym дает бонус классу boxer и sportsman, у них увеличивается damage. ConcertHall дает бонус классу motivator, они увеличивают damage своим тиммейтам лучше
+ 
+ Бой
+ 1)Есть две фракции, количество студентов в них могло бы быть вводимым через консоль если бы команда readline() работала в playground, поэтому как будто ввели 5 на каждую из команд (их только 2)
+ 2)Две фракции сражаются в раундах до тех пор пока у одной из фракций не погибнут все участники
+ 3)В конце боя выводится фракция победитель
+ 
+ Раунд
+ 1)Каждый раунд рандомно выбирается фракция которая атакует первой, затем очередь атаковать другой фракции
+
+ 2)Каждый персонаж фракции атакует только 1 раз другого рандомно выбранного живого персонажа из фракции оппонентов (Если аттакует саппорт (motivator или biologist) то рандомно выбирается живой персонаж из своей команды и саппорт увеличивает damage или hp). Потом другая фракция атакует по тем же правилам
+ 3)В конце каждого раунда выводится информация о том, кто погиб именно в текущем раунде а также информация о текущем составе команд
+ 
+ Генерация
+ 1)Рандомно генерируется арена
+ 2)Перед боем генерируется массив студентов для каждой из фракции
+ 3)В массив добавляются Персонажи, у которых тип и имя выбраны рандомно
+ */
+
 enum StudentType: String {
     case boxer = "Boxer"
     case biologist = "biologist"
@@ -125,9 +146,6 @@ enum StudentType: String {
 }
 
 protocol Student: AnyObject {
-    func getDamage(damage: Int)
-    func act(receiver: Student, supportPoints: Int)
-    func makeSound()
     var health: Int { get set }
     var damage: Int { get set }
     var defense: Int { get set }
@@ -136,12 +154,28 @@ protocol Student: AnyObject {
     var isSupport: Bool { get set }
     var name: String { get }
     var number: Int { get }
-    
-    
+
+    func getDamage(damage: Int)
+    func act(receiver: Student, supportPoints: Int)
+    func makeSound()
 }
 
 class AbstractStudent: Student {
     
+    var isSupport: Bool = false
+    var number: Int
+    var name: String
+    var defense: Int = 0
+    var health: Int = 0
+    var damage: Int = 0
+    var type: StudentType = StudentType.boxer
+    var isAlive: Bool = true
+    
+    init(number: Int, name: String) {
+        self.number = number
+        self.name = name
+    }
+        
     public func getDamage(damage: Int) {
         health -= damage
         if health <= 0 {
@@ -150,39 +184,24 @@ class AbstractStudent: Student {
         }
     }
     
-    private init() {
-    }
-    
     func act(receiver: Student, supportPoints: Int) {
     }
     
-    var isSupport: Bool = false
-     
-    var number: Int = -1
-    
-    var name: String = ""
-    
-    var defense: Int = 50
-        
     func makeSound() {
         print("P\(number): Boxer \(name) is here")
-    }
-    
-    var health: Int = 70
-    
-    var damage: Int = 100
-    
-    var type: StudentType = StudentType.boxer
-    
-    var isAlive: Bool = true
-    
-    init(number: Int, name: String) {
-        self.number = number
-        self.name = name
     }
 }
 
 class Boxer: AbstractStudent {
+    
+    override init(number: Int, name: String) {
+        super.init(number: number, name: name)
+        isSupport = false
+        defense = 70
+        health = 90
+        damage = 70
+        type = StudentType.boxer
+    }
     
    override func act(receiver: Student, supportPoints: Int) {
        print("P\(number) boxer \(name) attack: P\(receiver.number) \(receiver.type) \(receiver.name)")
@@ -200,26 +219,8 @@ class Boxer: AbstractStudent {
     override func makeSound() {
          print("P\(number): Boxer \(name) is here")
      }
-    
-    override init(number: Int, name: String) {
-        super.init(number: number, name: name)
-        isSupport = false
-        defense = 70
-        health = 90
-        damage = 70
-        type = StudentType.boxer
-    }
-    
 }
 class Biologist: AbstractStudent {
-    override func act(receiver: Student, supportPoints: Int) {
-        print("P\(number) biologist \(name) hill P\(receiver.number) \(receiver.type) \(receiver.name) at \(damage) points")
-        receiver.health += damage + supportPoints
-    }
-    
-    override func makeSound() {
-        print("P\(number): Biologist \(name) is here")
-    }
     
     override init(number: Int, name: String) {
         super.init(number: number, name: name)
@@ -229,9 +230,27 @@ class Biologist: AbstractStudent {
         type = StudentType.biologist
         isSupport = true
     }
+    
+    override func act(receiver: Student, supportPoints: Int) {
+        print("P\(number) biologist \(name) hill P\(receiver.number) \(receiver.type) \(receiver.name) at \(damage) points")
+        receiver.health += damage + supportPoints
+    }
+    
+    override func makeSound() {
+        print("P\(number): Biologist \(name) is here")
+    }
 }
 
 class Sportsman: AbstractStudent {
+    
+    override init(number: Int, name: String) {
+        super.init(number: number, name: name)
+        defense = 100
+        health = 90
+        damage = 60
+        type = StudentType.sportsman
+        isSupport = false
+    }
     
     override func act(receiver: Student, supportPoints: Int) {
         print("P\(number) sportsman \(name) attack: P\(receiver.number) \(receiver.type) \(receiver.name)")
@@ -249,27 +268,9 @@ class Sportsman: AbstractStudent {
     override func makeSound() {
         print("P\(number): Sportsman \(name) is here")
     }
-    
-    override init(number: Int, name: String) {
-        super.init(number: number, name: name)
-        defense = 100
-        health = 90
-        damage = 60
-        type = StudentType.sportsman
-        isSupport = false
-    }
 }
 
 class Motivator: AbstractStudent {
-    
-    override func act(receiver: Student, supportPoints: Int) {
-        print("P\(number) motivator \(name) motivate and increase P\(receiver.number) \(receiver.type) \(receiver.name) damage points at \(damage)")
-        receiver.damage += damage + supportPoints
-    }
-    
-    override func makeSound() {
-        print("P\(number): Motivator \(name) is here")
-    }
     
     override init(number: Int, name: String) {
         super.init(number: number, name: name)
@@ -279,22 +280,36 @@ class Motivator: AbstractStudent {
         type = StudentType.motivator
         isSupport = true
     }
+    
+    override func act(receiver: Student, supportPoints: Int) {
+        print("P\(number) motivator \(name) motivate and increase P\(receiver.number) \(receiver.type) \(receiver.name) damage points at \(damage)")
+        receiver.damage += damage + supportPoints
+    }
+    
+    override func makeSound() {
+        print("P\(number): Motivator \(name) is here")
+    }
 }
 
 protocol Arena {
     
+    var faction1Students: [Student] { get set }
+    var faction2Students: [Student] { get set }
+    
     func startBattle()
-    
-    var faction1: [Student] { get set }
-    
-    var faction2: [Student] { get set }
 }
 
 class AbstractArena: Arena {
     
-    private init() {
-        faction2 = []
-        faction1 = []
+    var faction1Students: [Student]
+    var faction2Students: [Student]
+    var privelegeList: [StudentType] = [StudentType.biologist]
+    var privelegePoints: Int = 10
+    var unitManager: UnitManager
+    
+    init(faction1Students: [Student], faction2Students: [Student]) {
+        self.faction1Students = faction1Students
+        self.faction2Students = faction2Students
         unitManager = UnitManager.init()
     }
     
@@ -304,28 +319,28 @@ class AbstractArena: Arena {
     func startBattle() {
         startBattleMessage()
         var isAllTeamsAlive = true
+        var faction1RandomIndexes : [Int] = []
+        var faction2RandomIndexes: [Int] = []
+        for i in 0..<faction1Students.count {
+            faction1RandomIndexes.append(i)
+        }
+        for i in 0..<faction2Students.count {
+            faction2RandomIndexes.append(i)
+        }
         while isAllTeamsAlive {
             print("NEW ROUND")
             unitManager.deadListRoundFaction2.removeAll()
             unitManager.deadListRoundFaction1.removeAll()
-            var faction1TeamNumbers : [Int] = []
-            var faction2TeamNumber: [Int] = []
-            for i in 0..<faction1.count {
-                faction1TeamNumbers.append(i)
-            }
-            for i in 0..<faction2.count {
-                faction2TeamNumber.append(i)
-            }
-            faction1TeamNumbers.shuffle()
-            faction2TeamNumber.shuffle()
-            if faction1TeamNumbers[0] % 2 == 0 {
+            faction1RandomIndexes.shuffle()
+            faction2RandomIndexes.shuffle()
+            if faction1RandomIndexes[0] % 2 == 0 {
                 print("First attack team 1")
                 print("---------------------            --------------------------")
-                unitManager.startRound(attackerFirst: faction1, attackerSecond: faction2, attackerFirstNumbers: faction1TeamNumbers, attackerSecondNumbers: faction2TeamNumber, privelegePoints: privelegePoints, attackerTeamNumber: 1)
+                unitManager.startRound(attackerFirst: faction1Students, attackerSecond: faction2Students, attackerFirstRandomIndexes: faction1RandomIndexes, attackerSecondRandomIndexes: faction2RandomIndexes, privelegePoints: privelegePoints, attackerTeamNumber: 1)
             } else {
                 print("First attack team 2")
                 print("---------------------            --------------------------")
-                unitManager.startRound(attackerFirst: faction2, attackerSecond: faction1, attackerFirstNumbers: faction2TeamNumber, attackerSecondNumbers: faction1TeamNumbers, privelegePoints: privelegePoints, attackerTeamNumber: 2)
+                unitManager.startRound(attackerFirst: faction2Students, attackerSecond: faction1Students, attackerFirstRandomIndexes: faction2RandomIndexes, attackerSecondRandomIndexes: faction1RandomIndexes, privelegePoints: privelegePoints, attackerTeamNumber: 2)
             }
             print("Round ended...")
             print("---------------------            --------------------------")
@@ -333,20 +348,13 @@ class AbstractArena: Arena {
             print("---------------------            --------------------------")
             printInfoAboutTeam()
             print("-----------------------------------------------------------")
-            
-            isAllTeamsAlive = unitManager.checkIfTeamAlive(team: faction1) && unitManager.checkIfTeamAlive(team: faction2)
+            isAllTeamsAlive = unitManager.checkIfTeamAlive(team: faction1Students) && unitManager.checkIfTeamAlive(team: faction2Students)
         }
         printWinnerTeam()
     }
-    
-    init(faction1: [Student], faction2: [Student]) {
-        self.faction1 = faction1
-        self.faction2 = faction2
-        unitManager = UnitManager.init()
-    }
-    
+
     func printWinnerTeam() {
-        if unitManager.checkIfTeamAlive(team: faction1) {
+        if unitManager.checkIfTeamAlive(team: faction1Students) {
             print("TEAM 1 WIN!👑")
         } else {
             print("TEAM 2 WIN!👑")
@@ -356,20 +364,20 @@ class AbstractArena: Arena {
     func printInfoAboutTeam() {
         print("Current team units:")
         print("Team number 1:")
-        for i in 0..<faction1.count {
-            if faction1[i].isAlive {
-            print("P\(faction1[i].number) \(faction1[i].type) \(faction1[i].name): \(faction1[i].health) hp, \(faction1[i].damage) damage, \(faction1[i].defense) defense")
+        for i in 0..<faction1Students.count {
+            if faction1Students[i].isAlive {
+            print("P\(faction1Students[i].number) \(faction1Students[i].type) \(faction1Students[i].name): \(faction1Students[i].health) hp, \(faction1Students[i].damage) damage, \(faction1Students[i].defense) defense")
             } else {
-                print ("P\(faction1[i].number) \(faction1[i].type) \(faction1[i].name) dead")
+                print ("P\(faction1Students[i].number) \(faction1Students[i].type) \(faction1Students[i].name) dead")
             }
         }
         print("")
         print("Team number 2:")
-        for i in 0..<faction2.count {
-            if faction2[i].isAlive {
-            print("P\(faction2[i].number) \(faction2[i].type) \(faction2[i].name): \(faction2[i].health) hp, \(faction2[i].damage) damage, \(faction2[i].defense) defense")
+        for i in 0..<faction2Students.count {
+            if faction2Students[i].isAlive {
+            print("P\(faction2Students[i].number) \(faction2Students[i].type) \(faction2Students[i].name): \(faction2Students[i].health) hp, \(faction2Students[i].damage) damage, \(faction2Students[i].defense) defense")
             } else {
-                print("P\(faction2[i].number) \(faction2[i].type) \(faction2[i].name) dead")
+                print("P\(faction2Students[i].number) \(faction2Students[i].type) \(faction2Students[i].name) dead")
             }
         }
     }
@@ -393,23 +401,12 @@ class AbstractArena: Arena {
             }
         }
     }
-    
-    var faction1: [Student]
-    
-    var faction2: [Student]
-    
-    var privelegeList: [StudentType] = [StudentType.biologist]
-    
-    var privelegePoints: Int = 10
-    
-    var unitManager: UnitManager
-    
 }
 
 class ChemicalClass: AbstractArena {
     
-    override init(faction1: [Student], faction2: [Student]) {
-        super.init(faction1: faction1, faction2: faction2)
+    override init(faction1Students: [Student], faction2Students: [Student]) {
+        super.init(faction1Students: faction1Students, faction2Students: faction2Students)
         unitManager = UnitManager.init(addPrivilegeAndBattleClosure: {
             (attacker: Student, defender: Student, privelegePoints) -> Void in
             if attacker.type == StudentType.biologist {
@@ -431,8 +428,8 @@ class ChemicalClass: AbstractArena {
 
 class Gym: AbstractArena {
     
-    override init(faction1: [Student], faction2: [Student]) {
-        super.init(faction1: faction1, faction2: faction2)
+    override init(faction1Students: [Student], faction2Students: [Student]) {
+        super.init(faction1Students: faction1Students, faction2Students: faction2Students)
         unitManager = UnitManager.init(addPrivilegeAndBattleClosure: {
             (attacker: Student, defender: Student, privelegePoints) -> Void in
             if attacker.type == StudentType.sportsman || attacker.type == StudentType.boxer {
@@ -454,8 +451,8 @@ class Gym: AbstractArena {
 
 class ConcertHall: AbstractArena {
     
-    override init(faction1: [Student], faction2: [Student]) {
-        super.init(faction1: faction1, faction2: faction2)
+    override init(faction1Students: [Student], faction2Students: [Student]) {
+        super.init(faction1Students: faction1Students, faction2Students: faction2Students)
         unitManager = UnitManager.init(addPrivilegeAndBattleClosure: {
             (attacker: Student, defender: Student, privelegePoints) -> Void in
             if attacker.type == StudentType.motivator {
@@ -478,9 +475,7 @@ class ConcertHall: AbstractArena {
 class UnitManager {
     
     var deadListRoundFaction1 : [Student] = []
-    
     var deadListRoundFaction2: [Student] = []
-    
     var addPrivelegeAndBattleClosure : (_ attacker: Student, _ defender: Student, _ privelegePoints: Int) -> Void
     
     init() {
@@ -492,18 +487,18 @@ class UnitManager {
         self.addPrivelegeAndBattleClosure = addPrivilegeAndBattleClosure
     }
         
-    public func startRound(attackerFirst: [Student], attackerSecond: [Student], attackerFirstNumbers: [Int], attackerSecondNumbers: [Int], privelegePoints: Int, attackerTeamNumber: Int) {
-        for i in attackerFirstNumbers {
+    public func startRound(attackerFirst: [Student], attackerSecond: [Student], attackerFirstRandomIndexes: [Int], attackerSecondRandomIndexes: [Int], privelegePoints: Int, attackerTeamNumber: Int) {
+        for i in attackerFirstRandomIndexes {
             if attackerFirst[i].isAlive {
                 if attackerFirst[i].isSupport {
-                    for j in attackerSecondNumbers {
+                    for j in attackerSecondRandomIndexes {
                         if attackerFirst[j].isAlive {
                             addPrivelegeAndBattleClosure(attackerFirst[i], attackerFirst[j], privelegePoints)
                             break
                         }
                     }
                 } else {
-                    for j in attackerSecondNumbers {
+                    for j in attackerSecondRandomIndexes {
                         if attackerSecond[j].isAlive {
                             addPrivelegeAndBattleClosure(attackerFirst[i], attackerSecond[j], privelegePoints)
                             if attackerSecond[j].isAlive == false {
@@ -521,17 +516,17 @@ class UnitManager {
         }
         print("Second team attack")
         print("---------------------            --------------------------")
-        for i in attackerSecondNumbers {
+        for i in attackerSecondRandomIndexes {
             if attackerSecond[i].isAlive {
                 if attackerSecond[i].isSupport {
-                    for j in attackerFirstNumbers {
+                    for j in attackerFirstRandomIndexes {
                         if attackerSecond[j].isAlive {
                             addPrivelegeAndBattleClosure(attackerSecond[i], attackerSecond[j], privelegePoints)
                             break
                         }
                     }
                 } else {
-                    for j in attackerFirstNumbers {
+                    for j in attackerFirstRandomIndexes {
                         if attackerFirst[j].isAlive {
                             addPrivelegeAndBattleClosure(attackerSecond[i], attackerFirst[j], privelegePoints)
                             if attackerFirst[j].isAlive == false {
@@ -562,7 +557,6 @@ class UnitManager {
 class BattleManager {
     
     let generator: Generator = Generator()
-    
     var arena: Arena
         
     init(){
@@ -576,10 +570,12 @@ class BattleManager {
 
 class Generator {
     
+    var names: [String] = ["Ivan", "Valera", "Alexander", "Volodya", "Rustam", "Emil", "Marat", "Leha", "Islam", "Ildar"]
+    
     public func generateTeam() -> [Student] {
         var students: [Student] = []
         var count = -1
-        //!!readLine не работает в playground поэтому хардкод
+        //MARK: readLine не работает в playground поэтому хардкод
         //print("Enter unit count")
         //let stringValue = readLine()
         /*
@@ -625,16 +621,13 @@ class Generator {
         let randomdigit = Int.random(in: 0...2)
         switch randomdigit {
         case 0:
-            return ConcertHall(faction1: generateTeam(), faction2: generateTeam())
+            return ConcertHall(faction1Students: generateTeam(), faction2Students: generateTeam())
         case 1:
-            return Gym(faction1: generateTeam(), faction2: generateTeam())
+            return Gym(faction1Students: generateTeam(), faction2Students: generateTeam())
         default:
-            return ChemicalClass(faction1: generateTeam(), faction2: generateTeam())
+            return ChemicalClass(faction1Students: generateTeam(), faction2Students: generateTeam())
         }
     }
-    
-    var names: [String] = ["Ivan", "Valera", "Alexander", "Volodya", "Rustam", "Emil", "Marat", "Leha", "Islam", "Ildar"]
-    
 }
 
 
