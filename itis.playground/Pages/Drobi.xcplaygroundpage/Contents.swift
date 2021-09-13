@@ -1,10 +1,12 @@
 struct Drob {
     var numerator: Int
     var denominator: Int
+    
     init(numerator: Int, denominator: Int) {
         self.numerator = numerator;
         self.denominator = denominator;
     }
+    
     func show() {
         print("\(numerator)/\(denominator)")
     }
@@ -17,11 +19,8 @@ protocol Operations {
     func division(firstDrob: Drob, secondDrob: Drob) -> Drob
     func gcd(drob: Drob) -> Int
     func reduction(drob: Drob) -> Drob
-    
 }
 
-    
-    
 struct Calculator: Operations {
 
     func gcd(drob: Drob) -> Int {

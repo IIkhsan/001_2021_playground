@@ -21,26 +21,64 @@ protocol Arena {
     func startBattle()
 }
 
+protocol Helper {
+    func teamHP(fraction: Fraction) -> Int
+    func teamDMG(fraction: Fraction) -> Int
+    func findLoot(team: Fraction)
+}
+
+extension Helper {
+    
+    func teamHP(fraction: Fraction) -> Int {
+        var teamHP = 0
+        for student in fraction.teammates {
+            teamHP += student.hp
+        }
+        return teamHP
+    }
+    
+    func teamDMG(fraction: Fraction) -> Int {
+        var teamDMG = 0
+        for student in fraction.teammates {
+            teamDMG += student.damage
+        }
+        return teamDMG
+    }
+    
+    func findLoot(team: Fraction) {
+        print("Team \(team.name) is trying to get some loot")
+        print()
+        for teammate in team.teammates {
+            let lootCheck = Int.random(in: 1...100)
+            if (lootCheck <= 25) {
+                print("Student \(teammate.name) will fight without any gun. I will destroy them with my hands")
+                teammate.gun = nil
+            }
+            else if (lootCheck > 25 && lootCheck <= 60) {
+                print("Student \(teammate.name) will fight with pencil. \(teammate.batteCry)")
+                teammate.gun = Gun.pencil
+            }
+            else if (lootCheck > 60 && lootCheck <= 85) {
+                print("Student \(teammate.name) will fight with rock. \(teammate.batteCry)")
+                teammate.gun = Gun.rock
+            }
+            else if (lootCheck > 85) {
+                print("Student \(teammate.name) will fight with knife. \(teammate.batteCry)")
+                teammate.gun = Gun.knife
+            }
+            if (lootCheck % 10 == 0) {
+                print("Student \(teammate.name) find protein bar. I FEEEEL POOOOWER")
+                teammate.hp = teammate.hp + 4
+            }
+        }
+        print()
+    }
+}
+
 enum Gun: Int {
     case pencil = 8
     case rock = 10
     case knife = 12
-}
-
-func teamHP(fraction: Fraction) -> Int {
-    var teamHP = 0
-    for student in fraction.teammates {
-        teamHP += student.hp
-    }
-    return teamHP
-}
-    
-func teamDMG(fraction: Fraction) -> Int {
-    var teamDMG = 0
-    for student in fraction.teammates {
-        teamDMG += student.damage
-    }
-    return teamDMG
 }
 
 class Rocking: Student {
@@ -110,36 +148,7 @@ class Nerd: Student {
     }
 }
 
-func findLoot(team: Fraction) {
-    print("Team \(team.name) is trying to get some loot")
-    print()
-    for teammate in team.teammates {
-        let lootCheck = Int.random(in: 1...100)
-        if (lootCheck <= 25) {
-            print("Student \(teammate.name) will fight without any gun. I will destroy them with my hands")
-            teammate.gun = nil
-        }
-        else if (lootCheck > 25 && lootCheck <= 60) {
-            print("Student \(teammate.name) will fight with pencil. \(teammate.batteCry)")
-            teammate.gun = Gun.pencil
-        }
-        else if (lootCheck > 60 && lootCheck <= 85) {
-            print("Student \(teammate.name) will fight with rock. \(teammate.batteCry)")
-            teammate.gun = Gun.rock
-        }
-        else if (lootCheck > 85) {
-            print("Student \(teammate.name) will fight with knife. \(teammate.batteCry)")
-            teammate.gun = Gun.knife
-        }
-        if (lootCheck % 10 == 0) {
-            print("Student \(teammate.name) find protein bar. I FEEEEL POOOOWER")
-            teammate.hp = teammate.hp + 4
-        }
-    }
-    print()
-}
-
-class Bully: Arena {
+class Bully: Arena, Helper {
     var firstFraction: Fraction
     var secondFraction: Fraction
     

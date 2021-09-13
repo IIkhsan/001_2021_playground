@@ -3,8 +3,8 @@
 import Foundation
 
 protocol Nameable {
-    var name: String? { get set }
     
+    var name: String? { get set }
     func getFullName(secondName: String) -> String
 }
 

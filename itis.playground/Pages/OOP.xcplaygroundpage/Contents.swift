@@ -2,8 +2,8 @@ import Foundation
 //Abstraction
 
 protocol AbstractPhone {
-    func call (outputNumber: Int)
-    func ring (inputNumber: Int)
+    func call(outputNumber: Int)
+    func ring(inputNumber: Int)
 }
 
 //Encapsulation
@@ -56,6 +56,7 @@ public class Smartphone: CellPhone {
         self.operationSystem = operationSystem
         super.init(year: year, hour: hour)
     }
+    
     public func install(program: String) {
         print("Устанавливаю \(program) для \(operationSystem)")
     }
@@ -74,6 +75,7 @@ public class User {
 }
 
 public class Phone: AbstractPhone {
+
     func call(outputNumber: Int) {
         print("Вызываю номер \(outputNumber)")
     }
@@ -81,11 +83,10 @@ public class Phone: AbstractPhone {
     func ring(inputNumber: Int) {
         print("Телефон звонит \(inputNumber)")
     }
-    
-    
 }
 
 public class VideoPhone: AbstractPhone {
+    
     func call(outputNumber: Int) {
         print("Подключаю видеоканал для обонента \(outputNumber)")
     }
