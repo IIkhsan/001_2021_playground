@@ -27,22 +27,25 @@ struct Fraction: CustomStringConvertible, Equatable {
     }
     
     func reduce() -> Fraction {
-        var num_copy = numerator
-        var den_copy = denominator
+        var numCopy = numerator
+        var denCopy = denominator
         var temp: Int
-        while den_copy != 0 {
-            temp = den_copy
-            den_copy = num_copy % den_copy
-            num_copy = temp
+        while denCopy != 0 {
+            temp = denCopy
+            denCopy = numCopy % denCopy
+            numCopy = temp
         }
-        let newNumerator = numerator / num_copy
-        let newDenominator = denominator / num_copy
+        let newNumerator = numerator / numCopy
+        let newDenominator = denominator / numCopy
         
-        return try! Fraction(numerator: newNumerator, denominator: newDenominator)
+        guard let newfraction = try? Fraction(numerator: newNumerator, denominator: newDenominator) else {
+            return self
+        }
+        return newfraction
     }
     
     mutating func reduceSelf() {
-        let fraction = try! Fraction(numerator: numerator, denominator: denominator).reduce()
+        guard let fraction = try? Fraction(numerator: numerator, denominator: denominator).reduce() else { return }
         numerator = fraction.numerator
         denominator = fraction.denominator
     }
@@ -52,7 +55,10 @@ struct Fraction: CustomStringConvertible, Equatable {
         let numerator = (denominator / left.denominator) * left.numerator +
             (denominator / right.denominator) * right.numerator
         
-        return try! Fraction(numerator: numerator, denominator: denominator).reduce()
+        if let newFraction = try? Fraction(numerator: numerator, denominator: denominator).reduce() {
+            return newFraction
+        }
+        return left
     }
     
     static func += (left: inout Fraction, right: Fraction) {
@@ -64,7 +70,10 @@ struct Fraction: CustomStringConvertible, Equatable {
         let numerator = (denominator / left.denominator) * left.numerator -
             (denominator / right.denominator) * right.numerator
         
-        return try! Fraction(numerator: numerator, denominator: denominator).reduce()
+        if let newFraction = try? Fraction(numerator: numerator, denominator: denominator).reduce() {
+            return newFraction
+        }
+        return left
     }
     
     static func -= (left: inout Fraction, right: Fraction) {
@@ -75,7 +84,10 @@ struct Fraction: CustomStringConvertible, Equatable {
         let numerator = left.numerator * right.numerator
         let denominator = left.denominator * right.denominator
         
-        return try! Fraction(numerator: numerator, denominator: denominator).reduce()
+        if let newFraction = try? Fraction(numerator: numerator, denominator: denominator).reduce() {
+            return newFraction
+        }
+        return left
     }
     
     static func *= (left: inout Fraction, right: Fraction) {
@@ -86,7 +98,10 @@ struct Fraction: CustomStringConvertible, Equatable {
         let numerator = left.numerator * right.denominator
         let denominator = left.denominator * right.numerator
         
-        return try! Fraction(numerator: numerator, denominator: denominator).reduce()
+        if let newFraction = try? Fraction(numerator: numerator, denominator: denominator).reduce() {
+            return newFraction
+        }
+        return left
     }
     
     static func /= (left: inout Fraction, right: Fraction) {
@@ -102,8 +117,8 @@ struct Fraction: CustomStringConvertible, Equatable {
 
 func main() {
     
-    let fraction1 = try! Fraction(numerator: 5, denominator: 4)
-    let fraction2 = try! Fraction(numerator: 3, denominator: 4)
+    guard let fraction1 = try? Fraction(numerator: 5, denominator: 4) else { return }
+    guard let fraction2 = try? Fraction(numerator: 3, denominator: 4) else { return }
     
     print("fraction1 = \(fraction1)")
     print("fraction2 = \(fraction2)")

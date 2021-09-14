@@ -10,8 +10,8 @@ protocol AbstractPhone {
     var companyName: String { get }
     var modelID: Int { get }
     
-    func call(outputNumber: Int) -> Void
-    func ring(inputNumber: Int) -> Void
+    func call(outputNumber: Int)
+    func ring(inputNumber: Int)
 }
 
 /// MARK: - Incapsulation
