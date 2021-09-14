@@ -319,7 +319,7 @@ class AbstractArena: Arena {
     func startBattle() {
         startBattleMessage()
         var isAllTeamsAlive = true
-        var faction1RandomIndexes : [Int] = []
+        var faction1RandomIndexes: [Int] = []
         var faction2RandomIndexes: [Int] = []
         for i in 0..<faction1Students.count {
             faction1RandomIndexes.append(i)
