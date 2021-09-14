@@ -2,9 +2,6 @@
 
 import Foundation
 
-var greeting = "Hello, playground"
-
-
 class Fraction {
     var a: Int
     var b: Int
@@ -14,20 +11,16 @@ class Fraction {
     }
     
     func reduction() {
-        var num = a //6
-        var den = b //14
+        var num = a
+        var den = b
         var buf: Int = 1
         while den != 0 {
-            buf = den // 14
-            den = num % den //14
-            num = buf //  14
-            
+            buf = den
+            den = num % den
+            num = buf
         }
         a = a / num
         b = b / num
-        
-        
-        
     }
     func showFraction() {
         print("\(a)/\(b)")
@@ -36,54 +29,48 @@ class Fraction {
         let answer = "\(a)/\(b)"
         return answer
     }
-    
-   
-}
 
-func sum(firstFraction: Fraction, secondFraction: Fraction) -> Fraction {
+
+func sum(secondFraction: Fraction) -> Fraction {
     let answer = Fraction(a: 0, b: 0)
-    answer.b = firstFraction.b * secondFraction.b
-    answer.a = (answer.b / firstFraction.b) * firstFraction.a + (answer.b / secondFraction.b) * secondFraction.a
+    answer.b = b * secondFraction.b
+    answer.a = (answer.b / b) * a + (answer.b / secondFraction.b) * secondFraction.a
     answer.reduction()
-    showOperation(firstFraction: firstFraction, secondFraction: secondFraction, answer: answer, type: "+")
+    showOperation(secondFraction: secondFraction, answer: answer, type: "+")
     return answer
 }
 
-func substraction(firstFraction: Fraction, secondFraction: Fraction) -> Fraction {
+func substraction(secondFraction: Fraction) -> Fraction {
     let answer = Fraction(a: 0, b: 0)
-    answer.b = firstFraction.b * secondFraction.b
-    answer.a = (answer.b / firstFraction.b) * firstFraction.a - (answer.b / secondFraction.b) * secondFraction.a
+    answer.b = b * secondFraction.b
+    answer.a = (answer.b / b) * a - (answer.b / secondFraction.b) * secondFraction.a
     answer.reduction()
-    showOperation(firstFraction: firstFraction, secondFraction: secondFraction, answer: answer, type: "-")
+    showOperation(secondFraction: secondFraction, answer: answer, type: "-")
     return answer
 }
 
-func multiplication(firstFraction: Fraction, secondFraction: Fraction) -> Fraction {
+func multiplication(secondFraction: Fraction) -> Fraction {
     let answer = Fraction(a: 0, b: 0)
-    answer.b = firstFraction.b * secondFraction.b
-    answer.a = firstFraction.a * secondFraction.a
+    answer.b = b * secondFraction.b
+    answer.a = a * secondFraction.a
     answer.reduction()
-    showOperation(firstFraction: firstFraction, secondFraction: secondFraction, answer: answer, type: "*")
+    showOperation(secondFraction: secondFraction, answer: answer, type: "*")
     return answer
 }
 
-func division(firstFraction: Fraction, secondFraction: Fraction) -> Fraction {
+func division(secondFraction: Fraction) -> Fraction {
     let answer = Fraction(a: 0, b: 0)
-    answer.a = firstFraction.a * secondFraction.b
-    answer.b = firstFraction.b * secondFraction.a
+    answer.a = a * secondFraction.b
+    answer.b = b * secondFraction.a
     answer.reduction()
-    showOperation(firstFraction: firstFraction, secondFraction: secondFraction, answer: answer, type: "/")
-    
+    showOperation(secondFraction: secondFraction, answer: answer, type: "/")
     return answer
 }
-
-func showOperation(firstFraction: Fraction, secondFraction: Fraction, answer: Fraction , type: String) {
-    print(firstFraction.showInString() + " \(type) " + secondFraction.showInString() + " = " + answer.showInString())
+  
+    func showOperation(secondFraction: Fraction, answer: Fraction , type: String) {
+        print(showInString() + " \(type) " + secondFraction.showInString() + " = " + answer.showInString())
+    }
 }
-
-
-
-
 // --------- Пример ----------
 
 let f1 = Fraction(a: 3, b: 7)
@@ -93,14 +80,13 @@ f1.showFraction()
 f2.showFraction()
 
 print("Сложение: ")
-sum(firstFraction: f1, secondFraction: f2)
+print(f1.sum(secondFraction: f2).showInString())
 
 print("Вычитание: ")
-substraction(firstFraction: f1, secondFraction: f2)
+print(f1.substraction(secondFraction: f2).showInString())
 
 print("Умножение: ")
-multiplication(firstFraction: f1, secondFraction: f2)
+print(f1.multiplication(secondFraction: f2).showInString())
 
 print("Деление: ")
-division(firstFraction: f1, secondFraction: f2)
-
+print(f1.division(secondFraction: f2).showInString())

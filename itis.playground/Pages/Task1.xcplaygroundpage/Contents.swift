@@ -5,16 +5,14 @@ import Foundation
 var greeting = "Hello, playground"
 // ---------- Абстракция ----------
 protocol PhoneExample {
-    var year: Int { get set }
-    
-    
+    var year: Int {get}
     func makeCall ()
     func receiveCall ()
 }
 
 class WirePhone: PhoneExample  {
-    var year: Int
-    var name: String
+    let year: Int
+    let name: String
     
     init(year: Int, name: String) {
         self.year = year
@@ -30,10 +28,10 @@ class WirePhone: PhoneExample  {
 }
 
 class SmartPhone: PhoneExample  {
-    var year: Int
-    var name: String
-    var cpu: String
-    var fastCharge: Bool
+    let year: Int
+    let name: String
+    let cpu: String
+    let fastCharge: Bool
     
     init(year: Int, name: String, cpu: String, fastcharge: Bool) {
         self.year = year
@@ -48,7 +46,6 @@ class SmartPhone: PhoneExample  {
     func receiveCall () {
         print("Принимаю звонок")
     }
-    
     func turnOnFastCharge (fastCharge: Bool) {
         if fastCharge == true {
             print("Быстрая зарядка включена")
@@ -64,8 +61,8 @@ class SmartPhone: PhoneExample  {
 
 // ---------- Инкапсуляция ----------
 class PersonalComputer {
-    private var cpu: String
-    private var gpu: String
+    private let cpu: String
+    private let gpu: String
     
     
     init(gpu: String, cpu: String) {
@@ -80,8 +77,6 @@ class PersonalComputer {
         print("ПК выключен")
     
     }
-
-    
 }
 
 
@@ -90,8 +85,8 @@ class PersonalComputer {
 // ---------- Наследование ----------
 
 class Transport {
-    var capacity: Int
-    var speed: Int
+    let capacity: Int
+    let speed: Int
     
     init(capacity: Int, speed: Int) {
         self.capacity = capacity
@@ -103,13 +98,12 @@ class Transport {
     func drive(){
         print("Вожу транспорт!")
     }
-    
 }
 
 class Car: Transport {
-    var horsePower: Int
-    var country: String
-    var tankVolume: Int
+    let horsePower: Int
+    let country: String
+    let tankVolume: Int
     
      init(capacity: Int, speed: Int, horsePower: Int, country: String, tankVolume: Int ) {
         self.horsePower = horsePower
@@ -124,7 +118,6 @@ class Car: Transport {
     override func drive() {
         print("Вожу автомобиль!")
     }
-    
 }
 
 class AirTransport: Transport {
@@ -160,7 +153,6 @@ class ElectroCar: Car {
     override func drive() {
         print("Вожу электрокар!")
     }
-    
 }
 
 class Person {
@@ -174,13 +166,7 @@ class Person {
     func driveTransport(transport: Transport) {
         transport.drive()
     }
-    
-    
 }
-
 let man: Person = Person(age: 21, name: "Иван")
 let jeep: ElectroCar = ElectroCar(capacity: 4, speed: 260, horsePower: 249, tankVolume: 3400, country: "USA", batteryDistance: 300)
 man.driveTransport(transport: jeep)
-
-
-//: [Next](@next)
