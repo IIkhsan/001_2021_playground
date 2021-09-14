@@ -51,8 +51,8 @@ class Fraction{
     }
     
     public func add(fraction: Fraction) -> Fraction {
-        self.reduce();
-        fraction.reduce();
+        self.reduce()
+        fraction.reduce()
         var newFraction = Fraction(numerator: (numerator * fraction.getDenominator()) + (denominator * fraction.getNumerator()), denominator: denominator * fraction.getDenominator())
         newFraction.reduce()
 
@@ -60,8 +60,8 @@ class Fraction{
     }
     
     public func sub(fraction: Fraction) -> Fraction {
-        self.reduce();
-        fraction.reduce();
+        self.reduce()
+        fraction.reduce()
         var newFraction = Fraction(numerator: (numerator * fraction.getDenominator()) - (denominator * fraction.getNumerator()), denominator: denominator * fraction.getDenominator())
         newFraction.reduce()
 
