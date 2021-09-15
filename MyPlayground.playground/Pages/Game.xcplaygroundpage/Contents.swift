@@ -94,11 +94,11 @@ class Game {
                     print("        🎖\(allComands[i].name) win🎖")
                 }
                 newCommand.append(allComands[i])
-            }else {
+            } else {
                 let secondRandom: Int = Int.random(in: 0...1)
                 if secondRandom == 0 {
                     print("        🎖\(allComands[secondCount].name) win🎖")
-                }else{
+                } else{
                     print("\(allComands[secondCount].name) won and shouts its slogan \(allComands[secondCount].slogans)")
                     print("        🎖\(allComands[secondCount].name) win🎖")
                 }
@@ -131,7 +131,7 @@ for i in 0..<count{
     print("Damage before affect: \(allComands[flag - 1].powerOfTeam())")
     if buf > 0 {
         print("        💉💊Affect: Plus \(buf) to damage💊💉")
-    }else {
+    } else {
         print("            💀💀Affect: \(buf) to damage💀💀")
     }
     
