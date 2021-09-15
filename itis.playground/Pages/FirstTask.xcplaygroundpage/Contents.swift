@@ -2,9 +2,6 @@
 
 import Foundation
 
-//First task
-
-
 class Transport {
     let model: String
 
@@ -39,4 +36,5 @@ class Plane: Aircraft {
         print("Plane took off")
     }
 }
+
 //: [Next](@next)
