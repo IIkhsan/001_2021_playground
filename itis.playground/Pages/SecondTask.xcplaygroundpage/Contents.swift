@@ -87,5 +87,4 @@ print("Вычитание")
 subtraction(firstFraction: frac1, secondFraction: frac2).showFraction()
 
 
-
 //: [Next](@next)

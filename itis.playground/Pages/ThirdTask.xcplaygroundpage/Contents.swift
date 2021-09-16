@@ -2,319 +2,280 @@
 
 import Foundation
 
-protocol Student{
-    var name: String { get set }
-    var health: Int { get set }
-    var damage: Int { get set }
-    var chant: String { get set }
+protocol Student {
+    var name: String {get set}
+    var health: Int {get set}
+    var damage: Int {get set}
+    var chant: String {get set}
     var isAlive: Bool {get set}
-    var fractionName: Fraction {get set}
-    var count: Int {get set}
     
-    func getDamage(_ damage: Int)
-    func attack(_ another: Student)
+    func attack(student: Student)
 }
 
+protocol Team {
+    var name: String {get set}
+    var teammate: [Student] {get set}
+    var isAlive: Bool {get set}
+}
 
-protocol Arena{
-    var firstTeam: [Student] {get set}
-    var secondTeam: [Student] {get set}
-    var place: Place! {get set}
-    
+protocol Arena {
+    var name: String {get set}
+    var firstTeam: Team {get set}
+    var secondTeam: Team {get set}
     func startBattle()
-}
-
-enum Place: CaseIterable{
-    case garage
-    case park
-    case street
-}
-
-enum Fraction: String,CaseIterable{
-    case mathematicians = "Math"
-    case programmers = "P"
-    case linguists = "L"
-    case chemists = "C"
-}
-
-class Mathematician: Student{
     
+}
+
+var NAMES = ["Oleg", "Danil", "Kostya", "Katya", "Zukhra", "Alex", "Max", "Sonya", "Lenar", "Yana", "Petr", "Ivan", "Ramil", "Elly"]
+
+class Elf: Student {
     var name: String
     var health: Int
     var damage: Int
     var chant: String
-    var fractionName: Fraction
-    var isAlive: Bool
-    var count = 0
-    
-    
-    init() {
-        self.name = "Math\(count)"
-        count += 1
-        self.health = 20
-        self.damage = 5
-        self.fractionName = Fraction.mathematicians
-        self.chant = " Be afraid of mathematicians!"
-        self.isAlive = true
-    }
-    
-    func getDamage(_ damage: Int) {
-        if self.health <= 0 {
-            self.isAlive = false
-            print("\(self.name) died")
-        }
-            self.health -= damage
-    }
-    
-    func attack(_ another: Student) {
-        print("\(self.name):\(another.name)\(self.chant)")
-        print("\(self.name) attacked \(another.name)")
-        another.getDamage(self.damage)
-    }
-}
-
-class Programmers: Student{
-    var count = 0
-    var name: String
-    var health: Int
-    var damage: Int
-    var chant: String
-    var fractionName: Fraction
     var isAlive: Bool
     
-    
     init() {
-        self.name = "Prog\(count)"
-        count += 1
-        self.health = 30
+        self.name = NAMES.randomElement()!
+        self.health = 40
         self.damage = 15
-        self.fractionName = Fraction.mathematicians
-        self.chant = "Wictory or Death!!!!"
+        self.chant = "I am cool"
         self.isAlive = true
     }
     
-    func getDamage(_ damage: Int) {
-        if self.health <= 0 {
-            self.isAlive = false
-            print("\(self.name) died")
-        }
-            self.health -= damage
-    }
-    
-    func attack(_ another: Student) {
-        print("\(self.name):\(self.chant)")
-        print("\(self.name) attacked \(another.name)")
-        another.getDamage(self.damage)
+    //атака = исцеление тиммейта
+    func attack(student: Student) {
+        print("\(self.name) heals \(student.name)")
+        var student = student
+        student.health = student.health + self.damage
     }
 }
 
-class Linguists: Student{
-    var count = 0
+class Fairy: Student {
     var name: String
     var health: Int
     var damage: Int
     var chant: String
-    var fractionName: Fraction
     var isAlive: Bool
     
-    
     init() {
-        self.name = "Math\(count)"
-        count += 1
-        self.health = 10
-        self.damage = 2
-        self.fractionName = Fraction.mathematicians
-        self.chant = "ALGA!"
+        self.name = NAMES.randomElement()!
+        self.health = 40
+        self.damage = 10
+        self.chant = "I am super"
         self.isAlive = true
     }
     
-    func getDamage(_ damage: Int) {
-        if self.health <= 0 {
-            self.isAlive = false
-            print("\(self.name) died")
-        }
-            self.health -= damage
-    }
-    
-    func attack(_ another: Student) {
-        print("\(self.name):\(self.chant)")
-        print("\(self.name) attacked \(another.name)")
-        another.getDamage(self.damage)
+    //атака = повышение силы тиммейта
+    func attack(student: Student) {
+        print("\(self.name) healped \(student.name)")
+        var student = student
+        student.damage = student.damage + self.damage
     }
 }
 
-class Chemists: Student{
-    var count = 0
+class Ogr: Student {
     var name: String
     var health: Int
     var damage: Int
     var chant: String
-    var fractionName: Fraction
     var isAlive: Bool
     
-    
     init() {
-        self.name = "Chem\(count)"
-        count += 1
-        self.health = 10
-        self.damage = 3
-        self.fractionName = Fraction.mathematicians
-        self.chant = "HURRAH!"
+        self.name = NAMES.randomElement()!
+        self.health = 50
+        self.damage = 15
+        self.chant = "I am so cool"
         self.isAlive = true
     }
     
-    func getDamage(_ damage: Int) {
-        if self.health <= 0 {
-            self.isAlive = false
-            print("\(self.name) died")
-        }
-            self.health -= damage
-    }
-    
-    func attack(_ another: Student) {
-        print("\(self.name):\(self.chant)")
-        print("\(self.name) attacked \(another.name)")
-        another.getDamage(self.damage)
+    func attack(student: Student) {
+        print("\(self.name) attacked \(student.name)")
+        var student = student
+        student.health = student.health - self.damage
     }
 }
-class BattleArena: Arena {
 
-    var firstTeam: [Student]
-    var secondTeam: [Student]
-    var place: Place!
-    var firstTeamFraction: String!
-    var secondTeamFraction: String!
+class Giant: Student {
+    var name: String
+    var health: Int
+    var damage: Int
+    var chant: String
+    var isAlive: Bool
     
     init() {
-        firstTeam = [Student]()
-        secondTeam = [Student]()
+        self.name = NAMES.randomElement()!
+        self.health = 70
+        self.damage = 22
+        self.chant = "I am the strongest"
+        self.isAlive = true
+    }
+    
+    func attack(student: Student) {
+        print("\(self.name) attacked \(student.name)")
+        var student = student
+        student.health = student.health - self.damage
+    }
+}
+
+let studentsType: [Student.Type] = [Elf.self, Fairy.self, Ogr.self, Giant.self]
+
+class MagicFive: Team {
+    var name: String
+    var teammate: [Student]
+    var isAlive: Bool
+    var count = 5
+    
+    init() {
+        self.name = "Magic Five"
+        self.teammate = [Student] ()
+        self.isAlive = true
+        generateTeammate()
+    }
+    
+    func generateTeammate() {
+        for _ in 1...5 {
+            teammate.append(studentsType.randomElement() as! Student)
+        }
+    }
+}
+
+class MagicDust: Team {
+    var name: String
+    var teammate: [Student]
+    var isAlive: Bool
+    
+    init() {
+        self.name = "Magic Dust"
+        self.teammate = [Student] ()
+        self.isAlive = true
+        generateTeammate()
+    }
+    
+    func generateTeammate() {
+        for _ in 1...5 {
+            teammate.append(studentsType.randomElement() as! Student)
+        }
+    }
+}
+
+class MagicTeam: Team {
+    var name: String
+    var teammate: [Student]
+    var isAlive: Bool
+    var count = 5
+    
+    init() {
+        self.name = "Magic Team"
+        self.teammate = [Student] ()
+        self.isAlive = true
+        generateTeammate()
+    }
+    
+    func generateTeammate() {
+        for _ in 1...5 {
+            teammate.append(studentsType.randomElement() as! Student)
+        }
+    }
+}
+
+class Castle: Arena {
+    var name: String
+    var firstTeam: Team
+    var secondTeam: Team
+    
+    init(firstTeam: Team, secondTeam: Team) {
+        self.name = "Castle"
+        self.firstTeam = firstTeam
+        self.secondTeam = secondTeam
     }
     
     func startBattle() {
-        place = Place.allCases.randomElement()!
-        generateTeam()
-        var isAliveFirstTeam = true
-        var isAliveSecondTeam = true
-        
-        while (isAliveFirstTeam && isAliveSecondTeam) {
-            let firstTeamMember = firstTeam.filter({student in return student.isAlive}).first!
+        print("START BATTLE")
+        while (firstTeam.isAlive && secondTeam.isAlive) {
             
-            firstTeamMember.attack(secondTeam.filter({student in return student.isAlive}) as! Student)
-            
-            isAliveSecondTeam = checkIsTeamAlive(secondTeam)
-            if !isAliveSecondTeam {
-                break
-            }
-            
-            let secondTeamMember = secondTeam.filter({student in return student.isAlive}).first!
-            
-            secondTeamMember.attack(firstTeam.filter({student in return student.isAlive}) as! Student)
-            
-            isAliveFirstTeam = checkIsTeamAlive(firstTeam)
-            if !isAliveFirstTeam {
-                break
-            }
-        }
-        printResult(isAliveFirstTeam)
-    }
-    
-    private func checkIsTeamAlive(_ team: [Student]) -> Bool {
-        let count = team.filter{student in return student.isAlive}.count
-        return count != 0
-    }
-    
-    private func generateTeam() {
-            generateFirstTeam()
-            generateSecondTeam()
-        }
-        
-        private func generateFirstTeam() {
-            let idOfTeam = Int.random(in: 1...4)
-            let countsMembersOfTeam = Int.random(in: 1...5)
-            switch idOfTeam {
-            case 1:
-                firstTeamFraction = Fraction.mathematicians.rawValue
-                for _ in 0..<countsMembersOfTeam {
-                    firstTeam.append(Mathematician())
-                }
-            case 2:
-                firstTeamFraction = Fraction.programmers.rawValue
-                for _ in 0..<countsMembersOfTeam {
-                    firstTeam.append(Programmers())
-                }
-            case 3:
-                firstTeamFraction = Fraction.linguists.rawValue
-                for _ in 0..<countsMembersOfTeam {
-                    firstTeam.append(Linguists())
-                }
-            case 4:
-                firstTeamFraction = Fraction.chemists.rawValue
-                for _ in 0..<countsMembersOfTeam {
-                    firstTeam.append(Chemists())
-                }
-            default:
-                break
-            }
-        }
-        
-    private func generateSecondTeam() {
-        let idOfTeam = Int.random(in: 1...4)
-        let countsMembersOfTeam = Int.random(in: 1...5)
-        switch idOfTeam {
-        case 1:
-            secondTeamFraction = Fraction.mathematicians.rawValue
-            for _ in 0..<countsMembersOfTeam {
-                secondTeam.append(Mathematician())
-            }
-        case 2:
-            secondTeamFraction = Fraction.programmers.rawValue
-            for _ in 0..<countsMembersOfTeam {
-                secondTeam.append(Programmers())
-            }
-        case 3:
-            secondTeamFraction = Fraction.linguists.rawValue
-            for _ in 0..<countsMembersOfTeam {
-                secondTeam.append(Linguists())
-            }
-        case 4:
-            secondTeamFraction = Fraction.chemists.rawValue
-            for _ in 0..<countsMembersOfTeam {
-                secondTeam.append(Chemists())
-            }
-        default:
+            guard let playerFirstTeam = firstTeam.teammate.filter({$0.isAlive}).first else { firstTeam.isAlive = false
             break
         }
-    }
-        
-        func printResult(_ ifFirstWon : Bool) {
-            print("Game over")
-            if ifFirstWon {
-                print("\(firstTeamFraction!) won")
-            } else {
-                print("\(secondTeamFraction!) won")
+            
+            guard let playerSecondTeam = secondTeam.teammate.filter({$0.isAlive}).first else { secondTeam.isAlive = false
+            break
+        }
+            
+            playerFirstTeam.attack(student: playerSecondTeam)
+            
+            secondTeam.isAlive = isTeamAlive(secondTeam.teammate)
+            if !secondTeam.isAlive {
+                print("\(firstTeam.name) WIN")
+                break
             }
-            print("\(firstTeamFraction!) info:")
-            for student in firstTeam {
-                if student.isAlive {
-                    print("\(student.name) - \(student.health)")
-                } else {
-                    print("\(student.name) - dead")
-                }
+            
+            guard let playerFirstTeamm = firstTeam.teammate.filter({$0.isAlive}).first else { firstTeam.isAlive = false
+            break
+        }
+            
+            guard let playerSecondTeamm = secondTeam.teammate.filter({$0.isAlive}).first else { secondTeam.isAlive = false
+            break
+        }
+            
+            playerSecondTeamm.attack(student: playerFirstTeamm)
+            
+            firstTeam.isAlive = isTeamAlive(firstTeam.teammate)
+            if !firstTeam.isAlive {
+                print("\(secondTeam.name) WIN")
+                break
             }
-            print("\(secondTeamFraction!) info:")
-            for student in secondTeam {
-                if student.isAlive {
-                    print("\(student.name) - \(student.health)")
-                } else {
-                    print("\(student.name) - dead")
-                }
-            }
+            
+        func isTeamAlive(_ team: [Student]) -> Bool {
+            let counter = team.filter { student in
+                return student.isAlive
+            }.count
+            return counter != 0
+        }
         }
     }
+    func isTeamAlive(team: [Student]) -> Bool {
+        let counter = team.filter { student in
+            return student.isAlive
+        }.count
+        return counter != 0
+    }
+}
 
+//let arenaType: [Arena.Type] = [Castle.self, MagicForest.self]
 
-    let game = BattleArena()
-    game.startBattle()
+class Game {
+    private let arena: Arena
     
+    init() {
+        arena = Castle(firstTeam: Manager.generateTeam(),secondTeam: Manager.generateTeam())
+    }
+    
+    func start() {
+        arena.startBattle()
+    }
+}
 
-//: [Next](@next)
+class Manager {
+    static func generateTeam() -> Team {
+        let id = Int.random(in: 1...3)
+        switch id {
+        case 1:
+            return MagicFive()
+        case 2:
+            return MagicTeam()
+        case 3:
+            return MagicDust()
+        default:
+            return MagicDust()
+        }
+    }
+}
+
+//здесь выдает ошибку, причину не могу найти
+let game = Game()
+game.start()
+
+
+
+

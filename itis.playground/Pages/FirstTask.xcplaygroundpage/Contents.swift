@@ -21,7 +21,6 @@ class Aircraft: Transport {
     
     init(model: String, isBroken: Bool = false) {
         self.isBroken = isBroken
-        
         super.init(model: model)
     }
     
