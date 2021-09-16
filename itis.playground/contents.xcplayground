@@ -3,7 +3,6 @@
     <pages>
         <page name='page'/>
         <page name='My homework'/>
-        <page name='Game'/>
         <page name='Untitled Page'/>
     </pages>
 </playground>

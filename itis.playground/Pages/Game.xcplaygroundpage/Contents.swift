@@ -1,216 +1,238 @@
-import UIKit
 import Foundation
 
-var numberOfTeams = 4
+enum Fraction: String{
+    case water = "Water"
+    case fire = "Fire"
+    case earth = "Earth"
+    case air = "Air"
+}
+
+protocol Student{
+    var fraction: Fraction { get set }
+    
+    var isAlive: Bool { get set }
+    var HP: Int { get set }
+    var damage: Int { get set }
+    var cry: String { get set }
+    var name: String { get set }
+    init(name: String)
+}
+
+protocol Advantage {
+    var advantage: Int { get }
+    func getAdv() -> Void
+}
+
+protocol Disadvantage {
+    var disadvantage: Int { get }
+    func getDis() -> Void
+}
+
+class Arena {
+    
+    var firstTeam: Team
+    
+    var secondTeam: Team
+    
+    init(team1: Team, team2: Team) {
+        firstTeam = team1
+        secondTeam = team2
+    }
+    
+    func startBattle() {
+        while firstTeam.isAlive, secondTeam.isAlive {
+            print(firstTeam.students[0]?.cry ?? "")
+            secondTeam.getDamage(damage: firstTeam.fullDamage())
+            if secondTeam.isAlive {
+                print(secondTeam.students[0]?.cry ?? "")
+                firstTeam.getDamage(damage: secondTeam.fullDamage())
+            }
+        }
+    }
+}
 
 class Team {
-    var players: [Optional<Player>] = [Optional<Player>]()
-    var isInvoked = false
+    var students: [Optional<Student>]
+    let fraction: Fraction
+    var teamHP = 0
     var isAlive = true
-    var name: Int
-    init(name: Int) {
-        for i in 1...5 {
-            players.append(Player(name: i, teamName: name))
-        }
-        self.name = name
+    
+    init(studs: [Student]) {
+        self.students = studs
+        fraction = studs[0].fraction
+        teamHP = commonHP()
     }
     
-    var numOfPlayers: Int{
-        var s = 0
-        for player in players{
-            if(player != nil){
-                s+=1
-            }
+    func fullDamage () -> Int {
+        var result = 0
+        for s in students {
+            result += s?.damage ?? 0
         }
-        return s
-    }
-    
-    func commonDamage() -> Int {
-        if self.isAlive {
-            var result = 0;
-            for p in players{
-                result+=p?.damage ?? 0
-            }
-            return result
-        }else {
-            return 0
-        }
+        return result
     }
     
     func commonHP() -> Int {
         var result = 0
-        for p in players{
-            result+=p?.hp ?? 0
+        for s in students{
+            result+=s?.HP ?? 0
         }
         return result
     }
     
-    func getDamage(bigDamage: Int) -> Void {
-        if bigDamage != 0{
-            print("--Команда ", name, " получает урон ", bigDamage)
-            let numberOfPlayers = numOfPlayers
-            
-            if bigDamage>=self.commonHP() {
-                print("\n^ ^ ^ ^ ^ Спасибо за участие, команда ", name, "! На сегодня это всё ^ ^ ^ ^ ^")
-                isAlive = false
-            } else{
-                let damage = bigDamage / numberOfPlayers
-                players[Int.random(in: 0..<numberOfPlayers)]?.getDamage(damage: bigDamage % numberOfPlayers)
-                
-                for i in 0..<numberOfPlayers {
-                    players[i]?.getDamage(damage: damage)
-                    if !(players[i]?.isAlive ?? false) {
-                        players[i] = nil
-                    }
-                }
-            }
-        }
-    }
-}
-
-class Player{
-    var hp: Int
-    var damage: Int
-    var isAlive = true
-    var name: Int
-    var teamName: Int
-    
-    init(name: Int, teamName: Int) {
-        self.hp = Int.random(in: 50..<63)
-        self.damage = Int.random(in: 15..<22)
-        self.name = name
-        self.teamName = teamName
-    }
-    
-    func getDamage(damage: Int) -> Void {
-        if hp<=damage {
-            print("Попрощаемся с Игроком ", name, " из команды ", teamName, ". Для него эта игра окончена")
+    func getDamage(damage: Int) -> Bool {
+        if damage>=teamHP {
+            print("The end for team ", self.fraction)
             isAlive = false
-        } else{
-            hp-=damage
+            return false
+        }
+        teamHP-=damage
+        return true
+    }
+}
+
+class WaterStudent: Student{
+    
+    required init(name: String) {
+        self.name = name
+        HP = Int.random(in: 250..<330)
+        damage = Int.random(in: 40..<60)
+    }
+    
+    var HP: Int
+    
+    var damage: Int
+    
+    var cry = "Water proof"
+    
+    var name: String
+    
+    var fraction = Fraction.water
+    
+    var isAlive = true
+}
+
+class FireStudent: Student{
+    
+    required init(name: String) {
+        self.name = name
+        HP = Int.random(in: 220..<260)
+        damage = Int.random(in: 60..<70)
+    }
+    var HP: Int
+    
+    var damage: Int
+    
+    var cry = "With Fire and Sword"
+    
+    var name: String
+    
+    var fraction = Fraction.fire
+    
+    var isAlive = true
+
+}
+
+class EarthStudent: Student{
+    required init(name: String) {
+        self.name = name
+        HP = Int.random(in: 230..<270)
+        damage = Int.random(in: 50..<80)
+    }
+    var HP: Int
+    
+    var damage: Int
+    
+    var cry = "Financial Independence Retire Early"
+    
+    var name: String
+    
+    var fraction = Fraction.earth
+    
+    var isAlive = true
+
+}
+
+class AirStudent: Student{
+    
+    required init(name: String) {
+        self.name = name
+        HP = Int.random(in: 270..<300)
+        damage = Int.random(in: 40..<60)
+    }
+    var HP: Int
+    
+    var damage: Int
+    
+    var cry = "Financial Independence Retire Early"
+    
+    var name: String
+    
+    var fraction = Fraction.air
+    
+    var isAlive = true
+    
+}
+
+class Waterfall: Arena, Advantage, Disadvantage {
+    var advantage = 20
+    
+    func getAdv() {
+        if (firstTeam.fraction == Fraction.water){
+            firstTeam.teamHP += advantage
+        } else if (secondTeam.fraction == Fraction.water){
+            secondTeam.teamHP += advantage
         }
     }
     
-    func getHP(hp: Int) -> Void {
-        self.hp+=hp
-    }
+    var disadvantage = 15
     
-    func getLoot(loot: Int) -> Void {
-        self.damage+=loot
-    }
-}
-
-var teams: [Team] = [Team]()
-
-for i in 1...numberOfTeams {
-    teams.append(Team(name: i))
-}
-
-func fight(opponent1 t1: Team, opponont2 t2: Team)->Team{
-    print("\nДа начнется бой между командами ", t1.name, " ", t2.name, "\n")
-    var winner: Team
-    while t1.isAlive, t2.isAlive {
-        t1.getDamage(bigDamage: t2.commonDamage())
-        t2.getDamage(bigDamage: t1.commonDamage())
-    }
-    winner = t1.isAlive ? t1 : t2
-    
-    print(" * * * Поприветствуем победителя этой схватки! Команда ", winner.name, ", приглашаем в следующий тур! * * * \n")
-    return winner
-}
-
-func round(teams: [Team])->[Team]{
-    print("ВНИМАНИЕ! Начинается новый тур!")
-    var winners = [Team]()
-    
-    let numberOfFights = teams.count/2
-    
-    for _ in 0..<numberOfFights{
-        winners.append(fight(opponent1: randomOpponent(teams: teams), opponont2: randomOpponent(teams: teams)))
-    }
-    
-    func randomOpponent(teams: [Team])->Team{
-        let n = teams.count
-        var numOfTeam: Int
-        var result: Team
-        repeat{
-            numOfTeam = Int.random(in: 0..<n)
-            result = teams[numOfTeam]
-        }while result.isInvoked
-        teams[numOfTeam].isInvoked = true
-        return result
-    }
-    
-    return winners
-}
-
-func searching(team: Team){
-    print("команда ", team.name, " призы за внимательный поиск")
-    for player in team.players {
-        if player != nil {
-            var exp: Experience
-            switch Int.random(in: 0...2) {
-            case 0:
-                exp = goodExperience[Int.random(in: 0...2)]
-            case 1:
-                exp = badExperience[Int.random(in: 0...2)]
-            default:
-                exp = neutralExperience[Int.random(in: 0...2)]
+    func getDis() {
+            if (firstTeam.fraction == Fraction.fire){
+                firstTeam.teamHP -= disadvantage
+            } else if (secondTeam.fraction == Fraction.fire){
+                secondTeam.teamHP -= disadvantage
             }
-            
-            print(" ", player!.name, exp.event)
-            if(exp.isForTeam){
-                for player in team.players{
-                    player?.getDamage(damage: exp.damage)
-                    player?.getHP(hp: exp.hp)
-                }
-            }else{
-                player?.getHP(hp: exp.hp)
-                player?.getLoot(loot: exp.loot)
+    }
+    
+    override func startBattle() {
+        print("*   Welcome to the Waterfall arena  *")
+        getAdv()
+        getDis()
+        super.startBattle()
+    }
+}
+
+class Volcano: Arena, Advantage, Disadvantage {
+    
+    var advantage = 15
+    
+    func getAdv() {
+            if (firstTeam.fraction == Fraction.fire){
+                firstTeam.teamHP -= disadvantage
+            } else if (secondTeam.fraction == Fraction.fire){
+                secondTeam.teamHP -= disadvantage
             }
+    }
+    var disadvantage = 30
+    
+    func getDis() {
+        if (firstTeam.fraction == Fraction.water){
+            firstTeam.teamHP += advantage
+        } else if (secondTeam.fraction == Fraction.water){
+            secondTeam.teamHP += advantage
         }
     }
-}
-
-struct Experience{
-    let event: String
-    let damage: Int
-    let hp: Int
-    let loot: Int
-    let isForTeam: Bool
-}
-
-var goodExperience = [Experience]()
-goodExperience.append(Experience(event: " нашел бронежилет, в кармане которого обнаружились пули\n",
-                                 damage: 0, hp: 15, loot: 4, isForTeam: false))
-goodExperience.append(Experience(event: " набрел на лагерь целителей\n",
-                                 damage: 0, hp: 50, loot: 0, isForTeam: false))
-goodExperience.append(Experience(event: " обнаружил целебные травы и сделал отвар для всей команды\n",
-                                 damage: 0, hp: 7, loot: 0, isForTeam: true))
-
-var badExperience = [Experience]()
-badExperience.append(Experience(event: " сломал ногу. Зайцу. Отвлекся на писк и не заметил ядовитый плющ перед лицом\n",
-                                 damage: 10, hp: 0, loot: 0, isForTeam: false))
-badExperience.append(Experience(event: " наткнулся на вражеское снаряжение. Отряд не заметил потери бойца\n",
-                                 damage: 500, hp: 50, loot: 0, isForTeam: false))
-badExperience.append(Experience(event: " упал в яму и вся команда потратила время и силы на то, чтобы его оттуда достать\n",
-                                 damage: 4, hp: 0, loot: 0, isForTeam: true))
-
-var neutralExperience = [Experience]()
-neutralExperience.append(Experience(event: " зазевался и пропустил весь поиск лута\n",
-                                 damage: 0, hp: 0, loot: 0, isForTeam: false))
-neutralExperience.append(Experience(event: " бегал за бабочками, ибо рыскать в лесу в поисках снаряжения выше его достоинства\n",
-                                 damage: 0, hp: 0, loot: 0, isForTeam: false))
-neutralExperience.append(Experience(event: " честно пытался найти что-то полезное, но не всем везёт в этой игре\n",
-                                 damage: 0, hp: 0, loot: 0, isForTeam: false))
-
-while(teams.count != 1){
-    for team in teams {
-        searching(team: team)
-        team.isInvoked = false
-    }
     
-    teams = round(teams: teams)
+    override func startBattle() {
+        print("*   Welcome to the Volcano arena  *")
+        getAdv()
+        getDis()
+        super.startBattle()
+    }
 }
-print("\n \n \nПоздравляем с победой команду ", teams.remove(at: 0).name, "!!!")
-print("\nСпасибо всем за участие, приглашаем команды на праздничный фуршет в холле.\n \n \n")
+
+
+var team1 = Team(studs: [WaterStudent(name: "Oslo"), WaterStudent(name: "John")])
+var team2 = Team(studs: [FireStudent(name: "James"), FireStudent(name: "Alex")])
+
+Waterfall.init(team1: team1, team2: team2).startBattle()

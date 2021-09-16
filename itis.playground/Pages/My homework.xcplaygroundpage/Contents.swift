@@ -91,12 +91,16 @@ class Fraction{
         return Fraction(numer: n, denom: d).reduce()
     }
     
+    func printF() -> Void {
+        print(numerator, "/", denominator)
+    }
+    
 }
 
+// резудьтат не сохраняется в дробь
 var frac = Fraction(numer: 10, denom: 15)
 frac.multiply(factor: Fraction(numer: 2, denom: 4))
 frac.division(divider: Fraction(numer: 2, denom: 4))
 frac.addition(term: Fraction(numer: 1, denom: 2))
 frac.subtraction(subtrahend: Fraction(numer: 4, denom: 3))
-
-
+frac.printF()
