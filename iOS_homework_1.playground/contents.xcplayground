@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<playground version='6.0' target-platform='macos' buildActiveScheme='true' importAppTypes='true'>
+    <pages>
+        <page name='OOP'/>
+        <page name='Fractional values'/>
+        <page name='Fightning'/>
+    </pages>
+</playground>
