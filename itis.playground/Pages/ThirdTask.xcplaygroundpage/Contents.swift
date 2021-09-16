@@ -118,8 +118,6 @@ class Giant: Student {
     }
 }
 
-let studentsType: [Student.Type] = [Elf.self, Fairy.self, Ogr.self, Giant.self]
-
 class MagicFive: Team {
     var name: String
     var teammate: [Student]
@@ -135,7 +133,7 @@ class MagicFive: Team {
     
     func generateTeammate() {
         for _ in 1...5 {
-            teammate.append(studentsType.randomElement() as! Student)
+            teammate.append(generateTeammate() as! Student)
         }
     }
 }
@@ -154,7 +152,7 @@ class MagicDust: Team {
     
     func generateTeammate() {
         for _ in 1...5 {
-            teammate.append(studentsType.randomElement() as! Student)
+            teammate.append(generateTeammate() as! Student)
         }
     }
 }
@@ -174,7 +172,7 @@ class MagicTeam: Team {
     
     func generateTeammate() {
         for _ in 1...5 {
-            teammate.append(studentsType.randomElement() as! Student)
+            teammate.append(generateTeammate() as! Student)
         }
     }
 }
@@ -248,7 +246,7 @@ class Game {
     private let arena: Arena
     
     init() {
-        arena = Castle(firstTeam: Manager.generateTeam(),secondTeam: Manager.generateTeam())
+        arena = Castle(firstTeam: ManagerForTeam.generateTeam(),secondTeam: ManagerForTeam.generateTeam())
     }
     
     func start() {
@@ -256,7 +254,7 @@ class Game {
     }
 }
 
-class Manager {
+class ManagerForTeam{
     static func generateTeam() -> Team {
         let id = Int.random(in: 1...3)
         switch id {
@@ -272,7 +270,24 @@ class Manager {
     }
 }
 
-//здесь выдает ошибку, причину не могу найти
+class ManagerForStudents{
+    static func generatePlayer() -> Student {
+        let id = Int.random(in: 1...4)
+        switch id {
+        case 1:
+            return Elf()
+        case 2:
+            return Fairy()
+        case 3:
+            return Ogr()
+        case 4:
+            return Giant()
+        default:
+            return Ogr()
+        }
+    }
+}
+
 let game = Game()
 game.start()
 
