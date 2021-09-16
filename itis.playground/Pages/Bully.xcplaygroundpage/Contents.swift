@@ -12,7 +12,8 @@ protocol Student {
     //var feature: String { get set }
     
     func attack(enemy: Student)
-    func loseHP(damage: Double)
+    func loseHP(damage: Double, enemyResistance: Double)
+    func loseArmor(damage: Double)
 }
 //: [Next](@next)
 protocol Fraction {
@@ -31,6 +32,19 @@ protocol Arena {
     var fractions: [Fraction] { get set }
     
     func startBattle()
+}
+
+class FractionHelper {
+    var students: [RandomStudent] = []
+    
+    func kickStudent(student: RandomStudent) {
+        for i in 0...students.count - 1 {
+            if student.name == students[i].name {
+                students.remove(at: i)
+                break
+            }
+        }
+    }
 }
 
 class RandomStudent: Student {
@@ -59,11 +73,19 @@ class RandomStudent: Student {
     }
     
     func attack(enemy: Student) {
-        enemy.loseHP(damage: self.damage)
+        if enemy.armor <= 0 {
+            enemy.loseHP(damage: self.damage, enemyResistance: enemy.resistance)
+        } else {
+            enemy.loseArmor(damage: self.damage)
+        }
     }
     
-    func loseHP(damage: Double) {
-        self.hp -= damage
+    func loseArmor(damage: Double) {
+        self.armor -= damage
+    }
+    
+    func loseHP(damage: Double, enemyResistance: Double) {
+        self.hp -= damage * (1 - resistance)
     }
     
     init() {
@@ -145,12 +167,10 @@ class Helper {
     }
 }
 
-class Athletes: Fraction {
+class Athletes: FractionHelper, Fraction {
     var fractionName: String = "Athletes"
     var fractionArenaBuff: String = "SportsGround"
     var fractionArenaDebuff: String = "Library"
-    
-    var students: [RandomStudent] = []
     
     func arenaBuff() {
         for student in students {
@@ -166,23 +186,12 @@ class Athletes: Fraction {
             student.armor = 0
         }
     }
-    
-    func kickStudent(student: RandomStudent) {
-        for i in 0...students.count - 1 {
-            if student.name == students[i].name {
-                students.remove(at: i)
-                break
-            }
-        }
-    }
 }
 
-class Bullies: Fraction {
+class Bullies: FractionHelper, Fraction {
     var fractionName: String = "Bullies"
     var fractionArenaBuff: String = "Backyard"
     var fractionArenaDebuff: String = "Cabinet"
-    
-    var students: [RandomStudent] = []
     
     func arenaBuff() {
         for student in students {
@@ -197,23 +206,12 @@ class Bullies: Fraction {
             student.damage -= 5
         }
     }
-    
-    func kickStudent(student: RandomStudent) {
-        for i in 0...students.count - 1 {
-            if student.name == students[i].name {
-                students.remove(at: i)
-                break
-            }
-        }
-    }
 }
 
-class Nerds: Fraction {
+class Nerds: FractionHelper, Fraction {
     var fractionName: String = "Nerds"
     var fractionArenaBuff: String = "Library"
     var fractionArenaDebuff: String = "Backyard"
-    
-    var students: [RandomStudent] = []
     
     func arenaBuff() {
         for student in students {
@@ -230,23 +228,12 @@ class Nerds: Fraction {
             student.hp -= 30
         }
     }
-    
-    func kickStudent(student: RandomStudent) {
-        for i in 0...students.count - 1 {
-            if student.name == students[i].name {
-                students.remove(at: i)
-                break
-            }
-        }
-    }
 }
 
-class GoodGuys: Fraction {
+class GoodGuys: FractionHelper, Fraction {
     var fractionName: String = "GoodGuys"
     var fractionArenaBuff: String = "Cabinet"
     var fractionArenaDebuff: String = "SportsGround"
-    
-    var students: [RandomStudent] = []
     
     func arenaBuff() {
         for student in students {
@@ -263,15 +250,6 @@ class GoodGuys: Fraction {
             student.damage -= 3
         }
     }
-    
-    func kickStudent(student: RandomStudent) {
-        for i in 0...students.count - 1 {
-            if student.name == students[i].name {
-                students.remove(at: i)
-                break
-            }
-        }
-    }
 }
 
 class BattleArena: Arena {
@@ -284,20 +262,22 @@ class BattleArena: Arena {
         
         let area = helper.randomArea()
         
-        print("Будет будет на локации - \(area)")
-        print()
-        print("Сражаются \(fractions[0].fractionName) и \(fractions[1].fractionName)")
+        print("Будет будет на локации - \(area)\n")
+        print("Сражаются \(fractions[0].fractionName) и \(fractions[1].fractionName)\n")
 
         for i in 0...1 {
             fractions[i].students = helper.createStudentArray()
             if fractions[i].fractionArenaBuff == area {
                 fractions[i].arenaBuff()
-            }
-            else if fractions[i].fractionArenaDebuff == area {
+            } else if fractions[i].fractionArenaDebuff == area {
                 fractions[i].arenaDebuff()
             }
         }
+        
+        var i: Int = 0
+        
         while true {
+            print("Раунд - \(i)\n")
             fight(fraction1: fractions[0], fraction2: fractions[1])
             if !fractions[1].students.isEmpty {
                 fight(fraction1: fractions[1], fraction2: fractions[0])
@@ -306,11 +286,11 @@ class BattleArena: Arena {
             if fractions[1].students.isEmpty {
                 helper.end(fraction: fractions[0])
                 break
-            }
-            else if fractions[0].students.isEmpty {
+            } else if fractions[0].students.isEmpty {
                 helper.end(fraction: fractions[1])
                 break
             }
+            i += 1
         }
     }
     
@@ -318,19 +298,19 @@ class BattleArena: Arena {
         let fraction1Count = fraction1.students.count - 1
         let fraction2Count = fraction2.students.count - 1
         
+        print("Атакует команда - \(fraction1.fractionName)\n")
+        
         for i in 0...fraction1Count {
             let random = Int.random(in: 0...fraction2Count)
-            print()
             print("\(fraction1.students[i].name) кричит '\(fraction1.students[i].battleCry)'")
-            print("Он бьет \(fraction2.students[random].name) и наносит \(fraction1.students[i].damage) урона")
-            print()
+            print("Он бьет \(fraction2.students[random].name) и наносит \(fraction1.students[i].damage) урона. С учетом брони и сопротивления у игрока \(fraction2.students[random].name) стало \(fraction2.students[random].hp) здоровья\n")
             fraction1.students[i].attack(enemy: fraction2.students[random])
+            
         }
         
         for student in fraction2.students {
             if !student.isAlive() {
-                print("\(student.name) погиб")
-                print()
+                print("\(student.name) покинул бой\n")
                 fraction2.kickStudent(student: student)
             }
         }
