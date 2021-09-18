@@ -178,7 +178,7 @@ protocol Student {
     var health: Int { get set }
     var damage: Int { get set }
     var chant: String? { get set }
-    var name: String { get set }
+    let name: String { get set }
     
     var division: Division? { get set }
     var superPower: Superpower { get set }
