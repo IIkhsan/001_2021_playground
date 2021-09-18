@@ -346,7 +346,7 @@ class AnyStudent: Student {
 
 protocol Division {
     
-    var name: String { get }
+    let name: String { get }
 
     // the chant for this division
     var slogan: String { get }
