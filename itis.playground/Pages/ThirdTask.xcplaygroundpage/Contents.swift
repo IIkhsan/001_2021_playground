@@ -3,30 +3,30 @@
 import Foundation
 
 protocol Student {
-    var name: String {get set}
-    var health: Int {get set}
-    var damage: Int {get set}
-    var chant: String {get set}
-    var isAlive: Bool {get set}
+    var name: String { get }
+    var health: Int { get set }
+    var damage: Int { get set }
+    var chant: String { get set }
+    var isAlive: Bool { get set }
     
     func attack(student: Student)
 }
 
 protocol Team {
-    var name: String {get set}
-    var teammate: [Student] {get set}
-    var isAlive: Bool {get set}
+    var name: String { get set }
+    var teammate: [Student] { get set }
+    var isAlive: Bool {get set }
 }
 
 protocol Arena {
-    var name: String {get set}
-    var firstTeam: Team {get set}
-    var secondTeam: Team {get set}
+    var name: String { get }
+    var firstTeam: Team { get set }
+    var secondTeam: Team { get set}
     func startBattle()
     
 }
 
-var NAMES = ["Oleg", "Danil", "Kostya", "Katya", "Zukhra", "Alex", "Max", "Sonya", "Lenar", "Yana", "Petr", "Ivan", "Ramil", "Elly"]
+let NAMES = ["Oleg", "Danil", "Kostya", "Katya", "Zukhra", "Alex", "Max", "Sonya", "Lenar", "Yana", "Petr", "Ivan", "Ramil", "Elly"]
 
 class Elf: Student {
     var name: String
@@ -35,12 +35,12 @@ class Elf: Student {
     var chant: String
     var isAlive: Bool
     
-    init() {
-        self.name = NAMES.randomElement()!
-        self.health = 40
-        self.damage = 15
-        self.chant = "I am cool"
-        self.isAlive = true
+    init(name: String, health: Int, damage: Int, chant: String, isAlive: Bool ) {
+        self.name = name
+        self.health = health
+        self.damage = damage
+        self.chant = chant
+        self.isAlive = isAlive
     }
     
     //атака = исцеление тиммейта
@@ -58,12 +58,12 @@ class Fairy: Student {
     var chant: String
     var isAlive: Bool
     
-    init() {
-        self.name = NAMES.randomElement()!
-        self.health = 40
-        self.damage = 10
-        self.chant = "I am super"
-        self.isAlive = true
+    init(name: String, health: Int, damage: Int, chant: String, isAlive: Bool ) {
+        self.name = name
+        self.health = health
+        self.damage = damage
+        self.chant = chant
+        self.isAlive = isAlive
     }
     
     //атака = повышение силы тиммейта
@@ -81,12 +81,12 @@ class Ogr: Student {
     var chant: String
     var isAlive: Bool
     
-    init() {
-        self.name = NAMES.randomElement()!
-        self.health = 50
-        self.damage = 15
-        self.chant = "I am so cool"
-        self.isAlive = true
+    init(name: String, health: Int, damage: Int, chant: String, isAlive: Bool ) {
+        self.name = name
+        self.health = health
+        self.damage = damage
+        self.chant = chant
+        self.isAlive = isAlive
     }
     
     func attack(student: Student) {
@@ -103,12 +103,12 @@ class Giant: Student {
     var chant: String
     var isAlive: Bool
     
-    init() {
-        self.name = NAMES.randomElement()!
-        self.health = 70
-        self.damage = 22
-        self.chant = "I am the strongest"
-        self.isAlive = true
+    init(name: String, health: Int, damage: Int, chant: String, isAlive: Bool ) {
+        self.name = name
+        self.health = health
+        self.damage = damage
+        self.chant = chant
+        self.isAlive = isAlive
     }
     
     func attack(student: Student) {
@@ -124,10 +124,10 @@ class MagicFive: Team {
     var isAlive: Bool
     var count = 5
     
-    init() {
-        self.name = "Magic Five"
-        self.teammate = [Student] ()
-        self.isAlive = true
+    init(name: String, teammate: [Student], isAlive: Bool) {
+        self.name = name
+        self.teammate = teammate
+        self.isAlive = isAlive
         generateTeammate()
     }
     
@@ -143,10 +143,10 @@ class MagicDust: Team {
     var teammate: [Student]
     var isAlive: Bool
     
-    init() {
-        self.name = "Magic Dust"
-        self.teammate = [Student] ()
-        self.isAlive = true
+    init(name: String, teammate: [Student], isAlive: Bool) {
+        self.name = name
+        self.teammate = teammate
+        self.isAlive = isAlive
         generateTeammate()
     }
     
@@ -163,10 +163,10 @@ class MagicTeam: Team {
     var isAlive: Bool
     var count = 5
     
-    init() {
-        self.name = "Magic Team"
-        self.teammate = [Student] ()
-        self.isAlive = true
+    init(name: String, teammate: [Student], isAlive: Bool) {
+        self.name = name
+        self.teammate = teammate
+        self.isAlive = isAlive
         generateTeammate()
     }
     
@@ -259,13 +259,13 @@ class ManagerForTeam{
         let id = Int.random(in: 1...3)
         switch id {
         case 1:
-            return MagicFive()
+            return MagicFive(name: "Magic Five", teammate: [Student] (), isAlive: true)
         case 2:
-            return MagicTeam()
+            return MagicTeam(name: "Magic Team", teammate: [Student] (), isAlive: true)
         case 3:
-            return MagicDust()
+            return MagicDust(name: "Magic Dust", teammate: [Student] (), isAlive: true)
         default:
-            return MagicDust()
+            return MagicDust(name: "Magic Five", teammate: [Student] (), isAlive: true)
         }
     }
 }
@@ -275,15 +275,15 @@ class ManagerForStudents{
         let id = Int.random(in: 1...4)
         switch id {
         case 1:
-            return Elf()
+            return Elf(name: NAMES.randomElement()!, health: 40, damage: 15, chant: "I am cool", isAlive: true)
         case 2:
-            return Fairy()
+            return Fairy(name: NAMES.randomElement()!, health: 35, damage: 10, chant: "I am super", isAlive: true)
         case 3:
-            return Ogr()
+            return Ogr(name: NAMES.randomElement()!, health: 50, damage: 15, chant: "GOOO", isAlive: true)
         case 4:
-            return Giant()
+            return Giant(name: NAMES.randomElement()!, health: 50, damage: 12, chant: "I WILL KILL YOU", isAlive: true)
         default:
-            return Ogr()
+            return Ogr(name: NAMES.randomElement()!, health: 40, damage: 15, chant: "I am cool", isAlive: true)
         }
     }
 }
