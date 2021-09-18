@@ -21,24 +21,21 @@ struct Drob {
         if a > 0 && b > 0 {
             while (a != b){
                 if a > b {
-                    a = a - b
-                }else {
-                    b = b - a
+                    a -= b
+                } else {
+                    b -= a
                 }
             }
-        }else {
+        } else {
             a *= -1
             while a != b {
                 if a > b {
-                    a = a - b
-                }else {
-                    b = b - a
+                    a -= b
+                } else {
+                    b -= a
                 }
             }
         }
-        
-        
-        
         return Drob(numerator: numerator/a , denominator: denominator/b)
     }
 }
@@ -53,23 +50,23 @@ struct Calculator {
     }
     
     func addition() -> Drob {
-        let resultDenominator = drob1.denominator*drob2.denominator;
-        let resultNumerator = resultDenominator/drob1.denominator*drob1.numerator + resultDenominator/drob2.denominator*drob2.numerator
+        let resultDenominator = drob1.denominator * drob2.denominator;
+        let resultNumerator = resultDenominator / drob1.denominator * drob1.numerator + resultDenominator / drob2.denominator * drob2.numerator
         return Drob(numerator: resultNumerator, denominator: resultDenominator).NOD()
     }
     
     func subtraction() -> Drob {
-        let resultDenominator = drob1.denominator*drob2.denominator;
-        let resultNumerator = resultDenominator/drob1.denominator*drob1.numerator - resultDenominator/drob2.denominator*drob2.numerator
+        let resultDenominator = drob1.denominator * drob2.denominator;
+        let resultNumerator = resultDenominator / drob1.denominator * drob1.numerator - resultDenominator / drob2.denominator * drob2.numerator
         return Drob(numerator: resultNumerator, denominator: resultDenominator).NOD()
     }
     
     func multiplication() -> Drob {
-        return Drob(numerator: drob1.numerator*drob2.numerator, denominator: drob1.denominator*drob2.denominator).NOD()
+        return Drob(numerator: drob1.numerator * drob2.numerator, denominator: drob1.denominator * drob2.denominator).NOD()
     }
     
     func division() -> Drob {
-        return Drob(numerator: drob1.numerator*drob2.denominator, denominator: drob1.denominator*drob2.numerator).NOD()
+        return Drob(numerator: drob1.numerator * drob2.denominator, denominator: drob1.denominator * drob2.numerator).NOD()
     }
 }
 

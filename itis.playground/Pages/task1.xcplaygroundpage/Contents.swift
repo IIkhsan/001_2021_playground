@@ -25,7 +25,7 @@ class SomePhone {
         self.company = company
     }
     
-    private func openConnection(){}
+    private func openConnection() {}
     
     func call() {
         openConnection()
