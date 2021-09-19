@@ -178,43 +178,21 @@ protocol Student {
     var health: Int { get set }
     var damage: Int { get set }
     var chant: String? { get set }
-    let name: String { get set }
+    var name: String { get }
     
     var division: Division? { get set }
-    var superPower: Superpower { get set }
+//    var superPower: Superpower { get set }
     
     // die is condition 1-6
     func attack(_ opponent: Student, with die: Int)
 }
 
-
-enum Superpower {
-    // attacks all alive members in the team
-    case speed
-    
-    // damage * 2
-    case strength
-    
-    // attacks all with damage * 2
-    case godspeed
-    
-    // health increases by +20 for this student
-    case luck
-    
-    // health increases by +20 for all members of his division
-    case phoenix
-    
-    // reduces his mates health -20 and doubles his
-    case snake
-    
-    // block all forms of attack from opponent using `superpower` only
-    case shield
-    
-    case none
+protocol Superpower {
+    func attackWithSuperpower(_ opponent: AnyStudent)
 }
 
 
-class AnyStudent: Student {
+class AnyStudent: Student, Superpower {
     
     var health: Int {
         didSet {
@@ -247,13 +225,11 @@ class AnyStudent: Student {
         }
     }
     
-    var superPower: Superpower
-    
-    init(name: String, with power: Superpower = .none) {
+    init(name: String) {
         self.health = 100
         self.name = name
         self.damage = Int.random(in: 80...100)
-        self.superPower = power
+//        self.superPower = power
     }
     
     func attack(_ opponent: Student, with die: Int) {
@@ -264,7 +240,7 @@ class AnyStudent: Student {
         // 6 - do nothing
         switch die {
             case 1...3:
-                if opponent.superPower == .shield {
+                if opponent is IronGate {
                     print("\(opponent.nick) shielded super power attack from \(nick)")
                 } else {
                     attackWithSuperpower(opponent)
@@ -278,8 +254,13 @@ class AnyStudent: Student {
         }
     }
     
+    // default attack for students without superpower
+    func attackWithSuperpower(_ opponent: AnyStudent) {
+        opponent.health -= damage
+        printAttack(nil, opponent.nick)
+    }
     
-    private func printAttack(_ action: String? = nil,
+    fileprivate func printAttack(_ action: String? = nil,
                              _ opponent: String? = nil,
                              with: String? = nil) {
         var answer: String = ""
@@ -298,55 +279,82 @@ class AnyStudent: Student {
         print(answer)
     }
     
-    
-    private func attackWithSuperpower(_ opponent: AnyStudent) {
+}
+
+// old .shield superpower
+class IronGate: AnyStudent {}
+
+//old .speed superpower
+class SpeedSter: AnyStudent {
+    override func attackWithSuperpower(_ opponent: AnyStudent) {
         guard let opponents = opponent.division?.students else { return }
+        for player in opponents {
+            player.health -= damage
+        }
+        printAttack("super power attacked all", "\(opponent.division!.name)", with: "⚡️")
+    }
+}
+
+// old .strength superpower
+class Tanks: AnyStudent {
+    override func attackWithSuperpower(_ opponent: AnyStudent) {
+        opponent.health -= (damage * 2)
+        printAttack("super power attacked",opponent.nick, with: "super strength")
+    }
+}
+
+// old .luck superpower
+class LuckCharmer: AnyStudent {
+    override func attackWithSuperpower(_ opponent: AnyStudent) {
+        health = 100
+        opponent.health -= damage
+        print("\(name) used his luck super power")
+    }
+}
+
+// old .phoenix superpower
+class Phoenix: AnyStudent {
+    override func attackWithSuperpower(_ opponent: AnyStudent) {
         guard let teammates = division?.students else { return }
         
-        switch superPower {
-            case .speed:
-                for player in opponents {
-                    player.health -= damage
-                }
-                printAttack("super power attacked all", "\(opponent.division!.name)", with: "⚡️")
-                
-            case .strength:
-                opponent.health -= (damage * 2)
-                printAttack("super power attacked",opponent.nick, with: "super strength")
-            case .luck:
-                health = 100
-                opponent.health -= damage
-                print("\(name) used his luck super power")
-            case .phoenix:
-                opponent.health -= damage
-                for player in teammates {
-                    player.health += 20
-                }
-                print("\(name) increased his teammates health by +20♻️")
-            case .snake:
-                opponent.health -= 20
-                for player in teammates {
-                    player.health -= 20
-                }
-                health *= 2
-                printAttack("super power attack", "his own team mates and \(opponent.nick)", with: "snake superpower")
-            case .godspeed:
-                for player in opponents {
-                    player.health -= damage*2
-                }
-                printAttack("super power attacked", "\(opponent.division!.name)", with: "GodSpeed 🔱")
-            default:
-                opponent.health -= damage
-                printAttack(nil, opponent.nick)
-                
+        opponent.health -= damage
+        for player in teammates {
+            player.health += 20
         }
+        print("\(name) increased his teammates health by +20♻️")
     }
-    
 }
+
+// old .snake superpower
+class ConMan: AnyStudent {
+    override func attackWithSuperpower(_ opponent: AnyStudent) {
+        guard let teammates = division?.students else { return }
+        
+        opponent.health -= damage
+        for player in teammates {
+            player.health -= 20
+        }
+        health *= 2
+        printAttack("super power attack", "his own team mates and \(opponent.nick)", with: "snake superpower")
+    }
+}
+
+// old .godspeed power
+class Titan: AnyStudent {
+    override func attackWithSuperpower(_ opponent: AnyStudent) {
+        guard let opponents = opponent.division?.students else { return }
+        for player in opponents {
+            player.health -= damage * 2
+        }
+        printAttack("super power attacked", "\(opponent.division!.name)", with: "GodSpeed 🔱")
+    }
+}
+
+
 
 protocol Division {
     
-    let name: String { get }
+    var name: String { get }
 
     // the chant for this division
     var slogan: String { get }
@@ -435,28 +443,28 @@ protocol Arena {
 class BullyArena: Arena {
     let ludusMagnus = [
         "Marvel": [
-            AnyStudent(name: "Iron-Man", with: .godspeed),
-            AnyStudent(name: "Spider-Man", with: .snake),
-            AnyStudent(name: "Dr-Strange", with: .phoenix),
-            AnyStudent(name: "Ant-Man", with: .luck)
+            Titan(name: "Iron-Man"),
+            ConMan(name: "Spider-Man"),
+            Phoenix(name: "Dr-Strange"),
+            LuckCharmer(name: "Ant-Man")
         ],
         "DC": [
-            AnyStudent(name: "BatMan", with: .shield),
-            AnyStudent(name: "SuperMan", with: .godspeed),
-            AnyStudent(name: "AquaMan", with: .strength),
-            AnyStudent(name: "WonderWoman", with: .phoenix)
+            IronGate(name: "BatMan"),
+            Titan(name: "SuperMan"),
+            Tanks(name: "AquaMan"),
+            Phoenix(name: "WonderWoman")
         ],
         "MortalKombat": [
-            AnyStudent(name: "Liu Kang", with: .luck),
-            AnyStudent(name: "Sub Zero", with: .speed),
-            AnyStudent(name: "Scorpion", with: .snake),
-            AnyStudent(name: "Lord Raiden", with: .godspeed)
+            LuckCharmer(name: "Liu Kang"),
+            SpeedSter(name: "Sub Zero"),
+            ConMan(name: "Scorpion"),
+            Titan(name: "Lord Raiden")
         ],
         "GreekGods": [
-            AnyStudent(name: "Zeus", with: .godspeed),
-            AnyStudent(name: "Poseidon", with: .phoenix),
-            AnyStudent(name: "Hades", with: .snake),
-            AnyStudent(name: "Man", with: .none)
+            Titan(name: "Zeus"),
+            Phoenix(name: "Poseidon"),
+            ConMan(name: "Hades"),
+            AnyStudent(name: "Man")
         ]
         
     ]
