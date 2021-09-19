@@ -1,26 +1,32 @@
 import Foundation
 
 protocol Student {
-    var name: String { get set }
+    var name: String { get }
     var hp: Int { get set }
     var dmg: Int { get set }
-    var shout: String { get set }
+    var shout: String { get }
     
     func makeDamage(attacker: Student)
 }
 
 class Damage: Student {
-    var name = "Штурм"
-    var hp = 100
-    var dmg = 50
-    var shout = "Никто не догонит, никто не остановит!"
+    let name: String
+    var hp: Int
+    var dmg: Int
+    let shout: String
+    
+    init(name: String, hp: Int, dmg: Int, shout: String) {
+        self.name = name
+        self.hp = hp
+        self.dmg = dmg
+        self.shout = shout
+    }
     
     func makeDamage(attacker: Student) {
-        let ph = Int.random(in: 0...9)
-        if (ph > 4) {
+        let placeholder = Int.random(in: 0...9)
+        if (placeholder > 4) {
             self.hp-=attacker.dmg
             print("Урон прошёл! Теперь у жертвы \(self.hp) HP")
-
         } else {
             print("Урон не прошёл")
         }
@@ -28,17 +34,23 @@ class Damage: Student {
 }
 
 class Tank: Student {
-    var name = "Танк"
-    var hp = 150
-    var dmg = 30
-    var shout = "Турбосвинство!"
+    let name: String
+    var hp: Int
+    var dmg: Int
+    let shout: String
+    
+    init(name: String, hp: Int, dmg: Int, shout: String) {
+        self.name = name
+        self.hp = hp
+        self.dmg = dmg
+        self.shout = shout
+    }
     
     func makeDamage(attacker: Student) {
-        let ph = Int.random(in: 0...9)
-        if (ph > 3){
+        let placeholder = Int.random(in: 0...9)
+        if (placeholder > 3){
             self.hp-=attacker.dmg
             print("Урон прошёл! Теперь у жертвы \(self.hp) HP")
-
         } else {
             print("Урон не прошёл")
         }
@@ -47,17 +59,23 @@ class Tank: Student {
 }
 
 class Defense: Student {
-    var name = "Оборона"
-    var hp = 80
-    var dmg = 60
-    var shout = "Застыньте, не шевелитесь!"
+    let name: String
+    var hp: Int
+    var dmg: Int
+    let shout: String
+    
+    init(name: String, hp: Int, dmg: Int, shout: String) {
+        self.name = name
+        self.hp = hp
+        self.dmg = dmg
+        self.shout = shout
+    }
     
     func makeDamage(attacker: Student) {
-        let ph = Int.random(in: 0...9)
-        if (ph > 5){
+        let placeholder = Int.random(in: 0...9)
+        if (placeholder > 5){
             self.hp-=attacker.dmg
             print("Урон прошёл! Теперь у жертвы \(self.hp) HP")
-
         } else {
             print("Урон не прошёл")
         }
@@ -65,22 +83,28 @@ class Defense: Student {
 }
 
 class Support: Student {
-    var name = "Поддержка"
-    var hp = 100
-    var dmg = 30
-    var shout = "Герои не умирают!"
+    let name: String
+    var hp: Int
+    var dmg: Int
+    let shout: String
+    
+    init(name: String, hp: Int, dmg: Int, shout: String) {
+        self.name = name
+        self.hp = hp
+        self.dmg = dmg
+        self.shout = shout
+    }
     
     func makeDamage(attacker: Student) {
-        let ph = Int.random(in: 0...9)
-        if (ph > 3){
+        let placeholder = Int.random(in: 0...9)
+        if (placeholder > 3){
             self.hp-=attacker.dmg
             print("Урон прошёл! Теперь у жертвы \(self.hp) HP")
-            let ph2 = Int.random(in: 0...9)
-            if (ph2 > 5){
+            let placeholder2 = Int.random(in: 0...9)
+            if (placeholder2 > 5){
                 print("Противник восстановил себе здоровье, текущий уровень: \(self.hp)")
                 self.hp+=attacker.dmg
             }
-
         } else {
             print("Урон не прошёл")
         }
@@ -90,27 +114,25 @@ class Support: Student {
 
 class Fraction {
     var studentsArray : [Student] = []
-
+    
     init() {
         let randomStudentsCount = Int.random(in: 4...7)
         for _ in 1...randomStudentsCount{
-            let ph = Int.random(in: 1...4)
-            switch ph {
+            let placeholder = Int.random(in: 1...4)
+            switch placeholder {
             case 1:
-                studentsArray.append(Damage.init())
+                studentsArray.append(Damage.init(name: "Штурм", hp: 100, dmg: 50, shout: "Никто не догонит, никто не остановит!"))
             case 2:
-                studentsArray.append(Tank.init())
+                studentsArray.append(Tank.init(name: "Танк", hp: 150, dmg: 30, shout: "Турбосвинство!"))
             case 3:
-                studentsArray.append(Defense.init())
+                studentsArray.append(Defense.init(name: "Оборона", hp: 80, dmg: 60, shout: "Застыньте, не шевелитесь!"))
             case 4:
-                studentsArray.append(Support.init())
+                studentsArray.append(Support.init(name: "Поддержка", hp: 100, dmg: 30, shout: "Герои не умирают!"))
             default:
-                studentsArray.append(Damage.init())
+                studentsArray.append(Damage.init(name: "Штурм", hp: 100, dmg: 50, shout: "Никто не догонит, никто не остановит!"))
             }
         }
     }
-    
-    
 }
 
 protocol Arena {
@@ -140,15 +162,15 @@ class VolskayaIndustries: Arena {
             team2.studentsArray[i].dmg -= 15
         }
         fraction2 = team2.studentsArray
-
+        
         
         var stillPlaying: Bool = true
         while stillPlaying {
             print("             Раунд \(round) начался")
-
+            
             let randomPlayer1 = Int.random(in: 0...team1.studentsArray.count-1)
             let randomPlayer2 = Int.random(in: 0...team2.studentsArray.count-1)
-
+            
             let target = team2.studentsArray[randomPlayer2]
             
             
@@ -156,7 +178,7 @@ class VolskayaIndustries: Arena {
             print()
             print("Один из игроков кричит: \((fraction1[randomPlayer1].shout))")
             print("А голос ему в ответ: \((fraction2[randomPlayer2].shout))")
-
+            
             
             target.makeDamage(attacker: fraction1[randomPlayer1])
             if target.hp<1  {
@@ -173,10 +195,8 @@ class VolskayaIndustries: Arena {
                 print("             Раунд \(round) окончен")
                 round += 1
             }
-            
         }
     }
-        
 }
 
 
