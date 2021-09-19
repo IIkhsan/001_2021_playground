@@ -1,34 +1,34 @@
 import Foundation
 
 struct Fraction {
-    var a: Int
-    var b: Int
+    var upperNumber: Int
+    var underNumber: Int
     
     init(a: Int, b: Int) {
-        self.a = a
-        self.b = b
+        self.upperNumber = a
+        self.underNumber = b
     }
     
     mutating func NOD() {
-        var a_a: Int = a
-        var b_b: Int = b
+        var secondUpper: Int = upperNumber
+        var secondUnder: Int = underNumber
         var buf: Int = 0
-        while b_b != 0 {
-            buf = b_b
-            b_b = a_a % b_b
-            a_a = buf
+        while secondUnder != 0 {
+            buf = secondUnder
+            secondUnder = secondUpper % secondUnder
+            secondUpper = buf
         }
-       a = a / a_a
-        b = b / b_b
+       upperNumber = upperNumber / secondUpper
+        underNumber = underNumber / secondUnder
     }
     
     func show() {
         var buf: Int = 0
-        buf = a % b
+        buf = upperNumber % underNumber
         if buf != 0 {
-            print(a/b)
+            print(upperNumber/underNumber)
         } else {
-            print("\(a) / \(b)")
+            print("\(upperNumber) / \(underNumber)")
         }
     }
 }
@@ -48,21 +48,21 @@ struct addSubMultDrob {
     func operatorSum (ob1: Fraction, ob2: Fraction) -> Fraction {
         var temp: Fraction
         temp = Fraction.init(a: 0, b: 0)
-        temp.b = ob1.b * ob2.b
-        temp.a = (temp.b / ob1.b) * ob1.a  - (temp.b / ob2.b) * ob2.a
+        temp.underNumber = ob1.underNumber * ob2.underNumber
+        temp.upperNumber = (temp.underNumber / ob1.underNumber) * ob1.upperNumber  - (temp.underNumber / ob2.underNumber) * ob2.upperNumber
         return temp
     }
     
     func operatorMult(ob1: Fraction, ob2: Fraction) -> Fraction {
         var temp: Fraction
         temp = Fraction.init(a: 0, b: 0)
-        temp.b = ob1.b * ob2.b
-        temp.a = ob1.a * ob2.a
+        temp.underNumber = ob1.underNumber * ob2.underNumber
+        temp.upperNumber = ob1.upperNumber * ob2.upperNumber
         return temp
     }
     func showSubMult() {
-        print("First fraction \(ob1.a) / \(ob1.b)")
-        print("Second drob \(ob2.a) / \(ob2.b)")
+        print("First fraction \(ob1.upperNumber) / \(ob1.underNumber)")
+        print("Second drob \(ob2.upperNumber) / \(ob2.underNumber)")
     }
 }
 
