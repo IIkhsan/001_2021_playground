@@ -8,34 +8,40 @@ var greeting = "Hello, playground"
 
 //Absrtaction
 
-protocol Human{
-    var name: String? {get set}
-    var age: Int? {get set}
-    var sex: String? {get set}
+protocol Human {
+    var name: String { get set }
+    var age: Int { get set }
+    var sex: String { get set }
     
-    func sleep() -> Int
-    func eat() -> String
+    func sleep()
+    func eat()
 }
 
 //Encapsulation and inheritance
 
 class Student: Human {
-    var name: String?
-    var age: Int?
-    var sex: String?
+    var name: String
+    var age: Int
+    var sex: String
+
+    init(name: String, age: Int, sex: String) {
+        self.name = name
+        self.age = age
+        self.sex = sex
+    }
 
     private var politicalViews: String?
 
-    func sleep() -> Int {
-        return 4
+    func sleep()  {
+        print("Student \(self.name) slept 6 hours")
     }
 
-    func eat() -> String {
-        return "ate shawarma"
+    func eat() {
+        print("ate shawarma")
     }
 
-    private func prepareCheatSheats(subject:String) -> String {
-        return "cheat sheat are ready"
+    private func prepareCheatSheats(subject:String) {
+        print("\(subject) cheat sheat are ready")
     }
 }
 
@@ -60,7 +66,7 @@ struct FractionalNumber {
         self.numerator = numerator
         reduce()
     }
-        
+    
     func gcd(firstNum: Int, secondNum: Int) -> Int {
         if secondNum == 0 {
             return firstNum
@@ -83,7 +89,7 @@ struct FractionalNumber {
             print("\(numerator) / \(denominator)")
         }
     }
-     func add(fractionNumber: FractionalNumber) -> FractionalNumber {
+    func add(fractionNumber: FractionalNumber) -> FractionalNumber {
         
         let numerator = fractionNumber.numerator * self.denominator + fractionNumber.denominator * self.numerator
         let denominator = fractionNumber.denominator * self.denominator
@@ -98,7 +104,7 @@ struct FractionalNumber {
     }
     
     func subtract(fractionNumber: FractionalNumber) -> FractionalNumber {
-       
+        
         if (fractionNumber.denominator == self.denominator) {
             let numerator = self.numerator - fractionNumber.numerator
             let denominator = denominator
@@ -119,7 +125,7 @@ struct FractionalNumber {
             else {
                 return self
             }
-           
+            
         }
     }
     
@@ -137,7 +143,7 @@ struct FractionalNumber {
     }
     
     func divide(fractionNumber: FractionalNumber) -> FractionalNumber {
-       
+        
         if let inverseFraction =  try? FractionalNumber(numerator: fractionNumber.denominator, denominator: fractionNumber.numerator) {
             return self.multiply(fractionNumber: inverseFraction)
         }
@@ -155,7 +161,7 @@ protocol Student {
     
     var healthPoint: Int { get set }
     var damage: Int { get set }
-    var slogan: String { get set }
+    var slogan: String { get }
     var isAlive: Bool { get set }
     var name: String { get set }
     
@@ -167,9 +173,9 @@ protocol Student {
 
 protocol Arena {
     
-    var fractions: [Fraction] { get set }
-    var isAliveFirstTeam: Bool { get set }
-    var isAliveSecTeam: Bool { get set }
+    var fractions: [Fraction] { get }
+    var isAliveFirstTeam: Bool { get  }
+    var isAliveSecTeam: Bool { get  }
     
     func startBattle()
     func printNameFraction()
@@ -177,12 +183,12 @@ protocol Arena {
     func generateFractions()
     
 }
- 
+
 protocol Fraction  {
     
-    var name: String { get set }
+    var name: String { get  }
     var students: [Student] { get set }
-    var maxCountStudents: Int { get set }
+    var maxCountStudents: Int { get  }
     
     func generate()
     func isAliveAllStudentsInFraction() -> Bool
@@ -194,7 +200,7 @@ class ItisStudent: Student {
     
     var healthPoint: Int
     var damage: Int
-    var slogan: String
+    let slogan: String
     var isAlive: Bool
     var name: String
     
@@ -205,6 +211,14 @@ class ItisStudent: Student {
         self.damage = 5
         self.slogan = "ИТИС зашибись!"
         
+    }
+    
+    init(healthPoint: Int, damage: Int, slogan: String) {
+        self.name = ItisFraction.getNameFraction()
+        self.isAlive = true
+        self.healthPoint = healthPoint
+        self.damage = damage
+        self.slogan = slogan
     }
     
     func causeDamage(anotherStudent: Student) {
@@ -224,14 +238,14 @@ class ItisStudent: Student {
             self.isAlive = false
         }
     }
-
+    
 }
 
 class IvmiitStudent: Student {
     
     var healthPoint: Int
     var damage: Int
-    var slogan: String
+    let slogan: String
     var isAlive: Bool
     var name: String
     
@@ -242,7 +256,15 @@ class IvmiitStudent: Student {
         self.damage = 5
         self.slogan = "IVMIIT the best!"
     }
-
+     
+    init(healthPoint: Int, damage: Int, slogan: String) {
+        self.name = IvmiitFraction.getNameFraction()
+        self.isAlive = true
+        self.healthPoint = healthPoint
+        self.damage = damage
+        self.slogan = slogan
+    }
+    
     func causeDamage(anotherStudent: Student) {
         anotherStudent.getLosses(anotherStudent: self)
         if (!anotherStudent.isAlive) {
@@ -263,10 +285,10 @@ class IvmiitStudent: Student {
 }
 
 class FizFackStudent: Student {
-   
+    
     var healthPoint: Int
     var damage: Int
-    var slogan: String
+    let slogan: String
     var isAlive: Bool
     var name: String
     
@@ -276,6 +298,14 @@ class FizFackStudent: Student {
         self.healthPoint = 100
         self.damage = 5
         self.slogan = "I love FizFack!"
+    }
+     
+    init(healthPoint: Int, damage: Int, slogan: String) {
+        self.name = FizFackFraction.getNameFraction()
+        self.isAlive = true
+        self.healthPoint = healthPoint
+        self.damage = damage
+        self.slogan = slogan
     }
     
     func causeDamage(anotherStudent: Student) {
@@ -298,10 +328,10 @@ class FizFackStudent: Student {
 }
 
 class MechMathStudent: Student {
-   
+    
     var healthPoint: Int
     var damage: Int
-    var slogan: String
+    let slogan: String
     var isAlive: Bool
     var name: String
     
@@ -311,6 +341,14 @@ class MechMathStudent: Student {
         self.healthPoint = 100
         self.damage = 5
         self.slogan = "Learn! Create! Win on MechMath!"
+    }
+    
+    init(healthPoint: Int, damage: Int, slogan: String) {
+        self.name = MechMathFraction.getNameFraction()
+        self.isAlive = true
+        self.healthPoint = healthPoint
+        self.damage = damage
+        self.slogan = slogan
     }
     
     func causeDamage(anotherStudent: Student) {
@@ -349,7 +387,7 @@ class ItisFraction: Fraction {
             self.students.append(ItisStudent())
         }
     }
-
+    
     static func getNameFraction() -> String {
         return "ITIS";
     }
@@ -470,7 +508,7 @@ class FizFackFraction: Fraction {
 }
 
 class MechMathFraction: Fraction {
-
+    
     var name = "MechMath"
     var students: [Student]
     var maxCountStudents = 5
@@ -516,7 +554,7 @@ class MechMathFraction: Fraction {
 }
 
 extension Array {
-
+    
     subscript (randomPick n: Int) -> [Element] {
         var copy = self
         for i in stride(from: count - 1, to: count - n - 1, by: -1) {
@@ -541,7 +579,7 @@ class CanteenOfFizFack: Arena {
     internal func printNameFraction() {
         print("These fractions participate in the battle: \(fractions[0].name) and \(fractions[1].name)")
     }
-     internal func generateFractions() {
+    internal func generateFractions() {
         
         let allFractions: [Fraction] = [ItisFraction(), IvmiitFraction(), FizFackFraction(), MechMathFraction()]
         
@@ -555,7 +593,7 @@ class CanteenOfFizFack: Arena {
     
     func startBattle() {
         fractions = chekoutFraction(fractions: fractions)
-    
+        
         while (isAliveFirstTeam) || (isAliveSecTeam) {
             let randomFraction = Int.random(in: 0..<2)
             for index in 0..<fractions[0].maxCountStudents {
@@ -564,14 +602,12 @@ class CanteenOfFizFack: Arena {
                     print("In this battle fraction won: \(fractions[0].name) 👑 \n",
                           "\(fractions[0].getLosses())")
                     isAliveFirstTeam = false
-                    break
                 }
                 else {
-                   if (!fractions[0].isAliveAllStudentsInFraction()) {
+                    if (!fractions[0].isAliveAllStudentsInFraction()) {
                         print("In this battle fraction won: \(fractions[1].name) 👑 \n",
                               "\(fractions[1].getLosses())")
                         isAliveSecTeam = false
-                        break
                     }
                 }
             }
@@ -587,8 +623,7 @@ class CanteenOfFizFack: Arena {
                 for var student in fraction.students {
                     student.healthPoint += 15
                 }
-            }
-            else {
+            } else {
                 for var student in fraction.students {
                     student.healthPoint -= 15
                 }
@@ -613,14 +648,11 @@ class MarbleHall: Arena {
     internal func printNameFraction() {
         print("These fractions participate in the battle: \(fractions[0].name) and \(fractions[1].name)")
     }
-
+    
     internal func chekoutFraction(fractions: [Fraction]) -> [Fraction] {
         for var fraction in fractions {
             if fraction.name == ItisFraction.getNameFraction() {
-                let bossStudent = ItisStudent()
-                bossStudent.healthPoint = 200
-                bossStudent.damage = 15
-                
+                let bossStudent = ItisStudent(healthPoint: 200, damage: 15, slogan: "за ИТИС")
                 fraction.students.removeFirst()
                 fraction.students.insert(bossStudent, at: 0)
             }
@@ -640,10 +672,9 @@ class MarbleHall: Arena {
         }
     }
     
-    
     func startBattle() {
         fractions = chekoutFraction(fractions: fractions)
-    
+        
         while (isAliveFirstTeam) || (isAliveSecTeam) {
             let randomFraction = Int.random(in: 0..<2)
             for index in 0..<fractions[0].maxCountStudents {
@@ -652,14 +683,11 @@ class MarbleHall: Arena {
                     print("In this battle fraction won: \(fractions[0].name) 👑 \n",
                           "\(fractions[0].getLosses())")
                     isAliveFirstTeam = false
-                    break
-                }
-                else {
-                   if (!fractions[0].isAliveAllStudentsInFraction()) {
+                } else {
+                    if (!fractions[0].isAliveAllStudentsInFraction()) {
                         print("In this battle fraction won: \(fractions[1].name) 👑 \n",
                               "\(fractions[1].getLosses())")
                         isAliveSecTeam = false
-                        break
                     }
                 }
             }
