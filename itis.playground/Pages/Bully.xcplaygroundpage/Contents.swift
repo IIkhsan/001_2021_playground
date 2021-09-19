@@ -9,7 +9,6 @@ protocol Student {
     var armor: Double { get set }
     var resistance: Double { get set }
     var damage: Double { get set }
-    //var feature: String { get set }
     
     func attack(enemy: Student)
     func loseHP(damage: Double, enemyResistance: Double)
@@ -28,7 +27,6 @@ protocol Fraction {
 }
 
 protocol Arena {
-    var helper: Helper { get set }
     var fractions: [Fraction] { get set }
     
     func startBattle()
@@ -38,12 +36,7 @@ class FractionHelper {
     var students: [RandomStudent] = []
     
     func kickStudent(student: RandomStudent) {
-        for i in 0...students.count - 1 {
-            if student.name == students[i].name {
-                students.remove(at: i)
-                break
-            }
-        }
+        self.students.removeAll { $0.name == student.name}
     }
 }
 
@@ -55,21 +48,27 @@ class RandomStudent: Student {
     var armor: Double
     var resistance: Double
     var damage: Double
-    //var feature: String
+    
+    init(name: String, battleCry: String) {
+        self.name = name
+        self.battleCry = battleCry
+        
+        var random = Int.random(in: 90...110)
+        self.hp = Double(random)
+        
+        random = Int.random(in: 0...20)
+        self.armor = Double(random)
+        
+        self.resistance = 0
+        
+        self.damage = 10
+    }
     
     func isAlive() -> Bool {
         if self.hp <= 0 {
             return false
         }
         return true
-    }
-    
-    func getName(name: String) {
-        self.name = name
-    }
-    
-    func getBattleCry(battlecry: String) {
-        self.battleCry = battlecry
     }
     
     func attack(enemy: Student) {
@@ -86,84 +85,6 @@ class RandomStudent: Student {
     
     func loseHP(damage: Double, enemyResistance: Double) {
         self.hp -= damage * (1 - resistance)
-    }
-    
-    init() {
-        self.name = ""
-        self.battleCry = ""
-        
-        var random = Int.random(in: 90...110)
-        self.hp = Double(random)
-        
-        random = Int.random(in: 0...20)
-        self.armor = Double(random)
-        
-        self.resistance = 0
-        
-        self.damage = 10
-    }
-}
-
-class Helper {
-    var names: [String] =
-               ["Edison", "Xayvion", "Forrest", "Quinnton", "Nash", "Cruz", "Bronson", "Lorenzo",
-                "Vincent", "Xeno", "Quennel", "Miles" , "Isidro", "Luis", "Zakary", "Zechariah",
-                "Roberto", "Frederick", "Nelson", "Zain", "Justin", "Xanthos", "Patrick",
-                "Rodrigo", "Issac"]
-    var battleCries: [String] =
-                     ["Кавабанга!", "Мы русские, с нами Бог!", "Я люблю пиццу!", "Fus Ro Dah!",
-                      "Juggernaaaaaaaut!", "Лок’тар огар!", "За Императора!", "Джеронимо!",
-                      "Твоя душа будет моей!", "Навались!"]
-    var fractions: [String] =
-                   ["Athletes", "Bullies", "Nerds", "GoodGuys"]
-    var areas: [String] =
-                   ["SportsGround", "Library", "Backyard", "Cabinet"]
-    
-    func randomFraction() -> Fraction {
-        let random = Int.random(in: 0...fractions.count - 1)
-        let fraction = fractions[random]
-        self.fractions.remove(at: random)
-        
-        switch fraction {
-        case "Athletes":
-            return Athletes()
-        case "Bullies":
-            return Bullies()
-        case "Nerds":
-            return Nerds()
-        case "GoodGuys":
-            return GoodGuys()
-        default:
-            return Athletes()
-        }
-    }
-    
-    func randomArea() -> String {
-        return areas[Int.random(in: 0...3)]
-    }
-    
-    func createStudentArray() -> [RandomStudent] {
-        var students: [RandomStudent] = []
-        
-        for _ in 0...Int.random(in: 2...4) {
-            let student: RandomStudent = RandomStudent()
-            
-            var random = Int.random(in: 0...names.count - 1)
-            student.getName(name: names[random])
-            names.remove(at: random)
-            
-            random = Int.random(in: 0...battleCries.count - 1)
-            student.getBattleCry(battlecry: battleCries[random])
-            battleCries.remove(at: random)
-            
-            students.append(student)
-        }
-        
-        return students
-    }
-    
-    func end(fraction: Fraction) {
-        print("Победила \(fraction.fractionName)")
     }
 }
 
@@ -253,25 +174,62 @@ class GoodGuys: FractionHelper, Fraction {
 }
 
 class BattleArena: Arena {
-    var helper: Helper = Helper()
     var fractions: [Fraction] = []
     
     func startBattle() {
-        fractions.append(helper.randomFraction())
-        fractions.append(helper.randomFraction())
+        var fractionNames = ["Athletes", "Bullies", "Nerds", "GoodGuys"]
         
-        let area = helper.randomArea()
+        for _ in 0...1 {
+            let random = Int.random(in: 0...fractionNames.count - 1)
+            fractionNames.remove(at: random)
+            
+            switch random {
+            case 0:
+                fractions.append(Athletes())
+            case 1:
+                fractions.append(Bullies())
+            case 2:
+                fractions.append(Nerds())
+            case 3:
+                fractions.append(GoodGuys())
+            default:
+                break
+            }
+        }
+        
+        let areas: [String] = ["SportsGround", "Library", "Backyard", "Cabinet"]
+        let area = areas[Int.random(in: 0...areas.count - 1)]
         
         print("Будет будет на локации - \(area)\n")
         print("Сражаются \(fractions[0].fractionName) и \(fractions[1].fractionName)\n")
 
+        var names: [String] =
+                   ["Edison", "Xayvion", "Forrest", "Quinnton", "Nash", "Cruz", "Bronson", "Lorenzo",
+                    "Vincent", "Xeno", "Quennel", "Miles" , "Isidro", "Luis", "Zakary", "Zechariah",
+                    "Roberto", "Frederick", "Nelson", "Zain", "Justin", "Xanthos", "Patrick",
+                    "Rodrigo", "Issac"]
+        var battleCries: [String] =
+                         ["Кавабанга!", "Мы русские, с нами Бог!", "Я люблю пиццу!", "Fus Ro Dah!",
+                          "Juggernaaaaaaaut!", "Лок’тар огар!", "За Императора!", "Джеронимо!",
+                          "Твоя душа будет моей!", "Навались!"]
+        
         for i in 0...1 {
-            fractions[i].students = helper.createStudentArray()
-            if fractions[i].fractionArenaBuff == area {
-                fractions[i].arenaBuff()
-            } else if fractions[i].fractionArenaDebuff == area {
-                fractions[i].arenaDebuff()
+            var students: [RandomStudent] = []
+            
+            for _ in 0...Int.random(in: 2...4) {
+                let randomName = Int.random(in: 0...names.count - 1)
+                let randomBC = Int.random(in: 0...battleCries.count - 1)
+                
+                let student: RandomStudent = RandomStudent(name: names[randomName],
+                                                           battleCry: battleCries[randomBC])
+                
+                names.remove(at: randomName)
+                battleCries.remove(at: randomBC)
+                
+                students.append(student)
             }
+            
+            fractions[i].students = students
         }
         
         var i: Int = 0
@@ -284,12 +242,13 @@ class BattleArena: Arena {
             }
             
             if fractions[1].students.isEmpty {
-                helper.end(fraction: fractions[0])
+                print("Победила \(fractions[0].fractionName)")
                 break
             } else if fractions[0].students.isEmpty {
-                helper.end(fraction: fractions[1])
+                print("Победила \(fractions[1].fractionName)")
                 break
             }
+            
             i += 1
         }
     }
@@ -319,4 +278,3 @@ class BattleArena: Arena {
 
 var a: BattleArena = BattleArena()
 a.startBattle()
-
