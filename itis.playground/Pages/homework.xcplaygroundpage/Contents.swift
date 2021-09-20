@@ -6,8 +6,6 @@ import Foundation
 class SomePhone {
     private var year: Int
     private var company: String
-    
-    
     init(year: Int, company: String) {
         self.year = year
         self.company = company
@@ -29,7 +27,7 @@ class Phone {
         print("Ты звонишь мне")
     }
     func call(outputNumber: Int) {
-        
+        print("я звоню тебе")
     }
 }
 
@@ -179,7 +177,7 @@ protocol Student {
     var health: Int { get set }
     var damage: Int { get }
     var factionShoutout: String { get set }
-    let name: String { get }
+    var name: String { get }
     var faction: Faction { get set }
     var weapon: Weapon { get set }
     
@@ -208,7 +206,6 @@ extension Arena {
                 winningFaction = firstFactionOnFight
                 break
             }
-            sleep(1)
             firstRandom = Int.random(in: 0..<firstFactionOnFight.factionMembers.count)
             secondRandom = Int.random(in: 0..<secondFactionOnFight.factionMembers.count)
             secondFactionOnFight.factionMembers[Int.random(in: 0..<secondFactionOnFight.factionMembers.count)].attack(opponent: firstFactionOnFight.factionMembers[Int.random(in: 0..<firstFactionOnFight.factionMembers.count)])
