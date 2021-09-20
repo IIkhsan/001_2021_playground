@@ -264,6 +264,7 @@ class FactionMember: Student {
             opponent.health -= useFactionSkill(faction: self.faction)
         }
     }
+    
     func useFactionSkill(faction: Faction) -> Int {
         print("Звучит кричалка фракции " + faction.name)
         print(faction.factionShoutout)
