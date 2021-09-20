@@ -4,6 +4,11 @@ class Fruactional {
     var numerator: Int
     var denominator: Int
     
+    init(numerator: Int, denominator: Int) {
+        self.numerator = numerator
+        self.denominator = denominator
+    }
+    
     func forgiveness() {
         var numerator = self.numerator
         var denominator = self.denominator
@@ -22,7 +27,7 @@ class Fruactional {
         }
     }
     
-    
+    //перегрузка методов, поэтому функции статичена 
     static func + (firstNum: Fruactional, secondNum: Fruactional) -> Fruactional {
         let number: Fruactional = Fruactional(numerator: 0, denominator: 0)
         number.denominator = firstNum.denominator * secondNum.denominator
@@ -53,11 +58,6 @@ class Fruactional {
         number.numerator = firstNum.denominator * secondNum.numerator
         number.forgiveness()
         return number
-    }
-    
-    init(numerator: Int, denominator: Int) {
-        self.numerator = numerator
-        self.denominator = denominator
     }
 }
 
