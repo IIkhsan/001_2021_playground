@@ -179,7 +179,7 @@ protocol Student {
     var health: Int { get set }
     var damage: Int { get }
     var factionShoutout: String { get set }
-    var name: String { get }
+    let name: String { get }
     var faction: Faction { get set }
     var weapon: Weapon { get set }
     
